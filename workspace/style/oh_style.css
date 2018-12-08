@@ -1,0 +1,265 @@
+/*
+    This style sheet manages the layout and style for all controls inside the
+    OH JavaFX application. Note that the stylesheet has been setup such that
+    all colors in use are declared first as swatch colors inside the root 
+    and so one can change the color theme used by the app simply by changing
+    these colors.
+
+    Note that Material Design icons are being employed for all icon buttons
+    in this application, both for the Desktop Java Framework's top toolbar
+    as well as for icon buttons in the M3's edit toolbar. Note that this
+    app uses icons from https://material.io/icons/ and icon image sizes in
+    use are as follows:
+        djf top toolbar buttons: 36x36
+        
+
+    @author Richard McKenna
+    @version 1.0
+*/
+.root{
+    /* 
+        FIRST WE'LL DEFINE OUR SWATCHES, i.e. THE COMPLEMENTARY
+        COLORS THAT WE'LL USE TOGETHER IN MULTIPLE PLACES THAT
+        TOGETHER WILL MAKE UP A GIVEN THEME
+    */
+    
+    /*  THE NEURAL SWATCH IS USED FOR THE BACKGROUNDS IN PLACES WHERE
+        THERE ARE NO OTHER CONTROLS*/
+    SWATCH_NEUTRAL:             #DDE9E8;
+    /*  THE COMPLEMENT SWATCH IS USED FOR BACKGROUND AREAS OF THINGS
+        LAYERED ON TOP OF THE BACKGROUND */
+    SWATCH_COMPLEMENT:          #CAE9FF;
+    /*  THE ACCENT SWATCH IS USED FOR BORDERS OF THINGS LIKE TOOLBAR
+        THAT ARE USED FOR ORGANIZING GROUPS OF COMPONENTS */
+    SWATCH_ACCENT:              #1B4965;
+    SWATCH_ACCENT_ALT:          #4E7C98;
+    /*  THIS BLEND SWATCH IS USED FOR GRADIENT TRANSITIONS */
+    SWATCH_BLEND:               #5FA8D3;
+    
+    -fx-font-family: "Roboto";
+}
+
+/* FIRST WE HAVE THE CONTROLS THAT THE DESKTOP JAVA FRAMEWORK USES */
+
+/* THE TOOLBAR RUNNING THE LENGTH OF THE TOP OF THE UI */
+.djf_top_toolbar {
+    -fx-background-color:   SWATCH_NEUTRAL;
+    -fx-border-color:       SWATCH_ACCENT;
+    -fx-border-width:       2;
+    -fx-border-radius:      15;
+}
+/* A TOOLBAR IN THE TOP TOOLBAR LIKELY WITH BUTTONS */
+.djf_toolbar_pane {
+    -fx-background-color:   SWATCH_COMPLEMENT;
+    -fx-border-color:       SWATCH_ACCENT;
+    -fx-border-width:       2;
+    -fx-border-radius:      15;
+    -fx-background-radius: 15;
+}
+/* A BUTTON WITH AN ICON PUT IN A TOP TOOLBAR */
+.djf_icon_button {
+    -fx-background-color:   transparent;
+    -fx-padding:            0;
+}
+.djf_icon_button:hover {
+    -fx-background-color: linear-gradient(SWATCH_COMPLEMENT, SWATCH_BLEND);    
+}
+.djf_welcome_banner {
+    -fx-border-color:transparent;
+    -fx-border-width:10;
+}
+.djf_welcome_header {
+    -fx-font-size: 32pt;
+    -fx-background-color: transparent;
+}
+.djf_welcome_recent_pane {
+    -fx-padding: 20 20 20 20;
+    -fx-background-color:transparent;
+}
+.djf_welcome_recent_button {
+    -fx-font-size: 14pt;
+    -fx-underline: true;
+    -fx-text-fill: SWATCH_ACCENT;
+    -fx-background-color:transparent;
+}
+.djf_welcome_recent_button:hover {
+    -fx-text-fill: SWATCH_ACCENT_ALT;
+}
+.djf_welcome_recent_button:pressed {
+    -fx-text-fill: SWATCH_NEUTRAL;
+}
+.djf_welcome_new_pane {
+    -fx-background-color:transparent;
+}
+.djf_welcome_new_button {
+    -fx-font-size:20pt;
+    -fx-background-color:transparent;
+    -fx-border-width:2px;
+    -fx-border-color:black;
+    -fx-border-radius:15px;
+}
+.djf_welcome_new_button:hover{
+    -fx-background-color: SWATCH_COMPLEMENT;
+}
+.djf-welcome_new_button:pressed{
+    -fx-background-color: SWATCH_NEUTRAL;
+}
+
+.oh_pane {
+    -fx-padding: 10;
+}
+.oh_box {
+
+}
+.oh_header_label {
+    -fx-font-size: 16pt;
+    -fx-font-weight: bold;
+}
+.oh_prompt {
+
+}
+.oh_text_field, .oh_text_field_error {
+    -fx-font-size: 14pt;
+}
+.oh_text_field {
+    -fx-text-fill: black;
+}
+.oh_text_field_error {
+    -fx-text-fill: red;
+}
+.oh_button {
+    -fx-font-size: 14pt;
+    -fx-font-weight: bold;
+    -fx-border-radius: 10 10 10 10;
+    -fx-background-radius: 10 10 10 10;        
+}
+.oh_radio_box {
+    -fx-padding: 0 0 0 180;
+}
+.oh_radio_button {
+    -fx-padding: 0 0 0 30;
+    -fx-font-size: 14pt;
+    -fx-font-weight: bold;
+}
+.oh_column {
+    
+}
+.oh_centered_column {
+    -fx-alignment: CENTER;
+}
+.oh_table_view .column-header{
+    -fx-background-color: SWATCH_NEUTRAL;
+    -fx-font-size: 14pt;
+}
+.oh_office_hours_table_view .column-header {
+    -fx-background-color: SWATCH_NEUTRAL;
+    -fx-font-size: 14pt;
+}
+.oh_time_column {
+    -fx-background-color:   SWATCH_ACCENT;
+    -fx-text-fill:         white;
+    -fx-font-size:          14pt;   
+    -fx-font-weight:        bold;
+    -fx-padding:            10 20 10 20;
+}
+.oh_day_of_week_column {
+    -fx-font-size:          14pt;   
+    -fx-font-weight:        bold;
+    -fx-padding:            10 20 10 20;
+}
+
+.oh_dialog_grid_pane{
+    -fx-background-color: SWATCH_NEUTRAL;
+    -fx-background-radius: 5.0;
+    -fx-background-insets: 10.0 10.0 10.0 10.0;
+    -fx-padding: 20;
+    -fx-hgap: 30;
+    -fx-vgap: 30;
+}
+.oh_dialog_header{
+    -fx-font-weight: bold;
+    -fx-font-size: 18pt
+}
+.oh_dialog_prompt{
+    -fx-font-weight: bold;
+    -fx-font-size: 14pt;
+}
+.oh_dialog_text_field{
+    -fx-min-width:450px;
+    -fx-max-width:450px;
+    -fx-min-height:50px;
+    -fx-max-height:50px;
+    -fx-font-weight:bold;
+    -fx-font-size:14pt;
+}
+.oh_dialog_radio_button{
+    -fx-font-size: 14pt;
+    -fx-font-weight: bold;
+}
+.oh_dialog_box{
+    
+}
+.oh_dialog_button{
+    -fx-min-width:100px;
+    -fx-max-width:100px;
+    -fx-min-height:50px;
+    -fx-max-height:50px;
+    -fx-font-weight: bold;
+    -fx-font-size: 16pt;
+}
+
+.tooltip {
+    -fx-font-size:14pt;
+    -fx-font-weight:bold;
+    -fx-background-radius: 50 50 50 50;
+    -fx-background-color:SWATCH_ACCENT;
+}
+
+.oh_site{
+    -fx-padding: 10;
+}
+.oh_site_container{
+    -fx-spacing:5;
+}
+.oh_banner_label{
+      -fx-font-size: 12pt;
+      -fx-font-weight:bold;
+}
+.oh_bannerheader_label{
+    -fx-font-size: 24pt;
+    -fx-font-weight: bold;
+}
+
+.oh_banner_container{
+    -fx-spacing: 10;
+}
+.oh_banner_labels{
+    -fx-spacing:15;
+  }
+  .oh_banner_combo{
+      -fx-spacing:10;
+  }
+  .oh_textarea{
+      -fx-font-size:13pt;
+      
+  }
+  .oh_syllabus_container{
+      -fx-spacing:10;
+      -fx-padding: 20 20 20 20;
+  }
+  .oh_page{
+      -fx-spacing:20;
+  }
+  
+  .oh_site_instructor{
+      -fx-spacing:10;
+  }
+  .oh_site_instructor_box{
+      -fx-spacing:10;
+  }
+  .oh_schedule_container{
+      -fx-spacing:10;
+  }
+  
+
+  

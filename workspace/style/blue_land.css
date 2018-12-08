@@ -1,0 +1,194 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+body {
+    background-color:#9999ff;
+font-family: 'Roboto', sans-serif;
+}
+
+td.course_num
+{
+    font-family:monospace;
+}
+
+p,li,td,th {
+    font-size:13pt;
+}
+
+h1,h2,h3,h4,h5,h6 {
+    color:#003399
+}
+
+#navbar {
+    background-color:#3333cc;
+    margin-top:5px;
+}
+
+#banner {
+    font-size:24pt;
+    color:#ffffff;
+    background-color:#cccccc;
+}
+
+#desc {
+    background-color:#e6e6e6;
+    color:#000000;
+}
+
+a.nav {
+    color:#ffffff;
+    font-size:12pt;
+    font-weight:normal;
+}
+
+a.open_nav {
+    color:#ffffff;
+    font-size:18pt;
+    font-weight:bold;
+}
+
+hr {
+    color:#111155;
+}
+
+a.open_nav:hover {
+
+}
+
+a.nav:hover{
+    color:rgb(118,143,165);
+}
+
+a:hover {
+    color:rgb(118,143,165);
+}
+
+a {
+    text-decoration:none;
+    color:#006633;
+    font-weight:bold;
+}
+
+span {
+    color:#8888ff;
+    font-weight:bold;
+}
+
+span.reading {
+    color:#990099;
+    font-weight:normal;
+}
+
+span.tutorial {
+    color:#990099;
+    font-weight:normal;
+}
+
+span.hw {
+    color:#990000;
+    font-weight:normal;
+}
+
+span.grading {
+    color:#771177;
+    font-weight:bold;
+}
+
+td.highlight {
+    background-color:#00ffff;
+}
+
+table.hws {
+    border: 2px solid black;
+    border-collapse:collapse;
+}
+
+th.hws {
+    padding-right: 80px;
+}
+
+td.hws {
+    padding-right:80px;
+}
+
+.office_hours_schedule td
+{
+    height:50px;
+    text-align:center;
+    font-weight:bold;
+    background-color:rgb(227,230,235);
+}
+td.time
+{
+    background-color:rgb(174,189,99);
+    color:black;
+}
+td.open
+{
+    background-color:rgb(220,100,100);
+}
+td.lecture
+{
+    background-color:rgb(103,124,151);
+}
+td.recitation
+{
+    background-color:rgb(200, 190, 240);
+}
+td.tas
+{
+    width:260px;
+}
+.office_hours_schedule th
+{
+    background-color:rgb(180,120,180);
+}
+.email
+{
+    font-size:11pt;
+    color:black;
+    font-weight:normal;
+}
+
+
+.rec_0 {
+    background-color:rgb(255,204,153);
+    border: 5px solid white;
+    border-radius: 25px;
+    box-shadow: 5px 5px 5px #888888;
+}
+.rec_1 {
+    background-color:rgb(229, 204, 255);
+    border: 5px solid white;
+    border-radius: 25px;
+    box-shadow: 5px 5px 5px #888888;
+}
+.rec_cell {
+    padding: 10px 10px 10px 10px;
+}
+.ta_cell {
+    padding: 5px 5px 10px 15px;
+}
+.ta_name {
+    font-size:14pt;
+    color: black;
+}
+.ta_email {
+    font-size:10pt;
+    color: rgb(0,0,80);
+}
+
+#instructor_data {
+    font-size:14pt;
+}
+
+.instructor_photo {
+    margin-left:30px;
+}
+
+.instructor_time {
+    padding-left:20px;
+}
+
+.grading_total {
+    background-color: rgb(255,190,150);
+}
