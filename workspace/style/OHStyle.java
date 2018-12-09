@@ -52,6 +52,7 @@ public class OHStyle {
     public static final String CLASS_OH_MEETING = "oh_meeting";
     public static final String CLASS_OH_TEXTFIELD = "oh_textfield";
     public static final String CLASS_OH_SITE_INSTRUCTOR = "oh_site_instructor";
+    public static final String CLASS_OH_TITLEDPANE = "oh_titledpane";
     
 
     // FOR THE DIALOG

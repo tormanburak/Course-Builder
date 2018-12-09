@@ -43,6 +43,7 @@ import properties_manager.PropertiesManager;
 import oh.OfficeHoursApp;
 import oh.OfficeHoursPropertyType;
 import static oh.OfficeHoursPropertyType.*;
+import oh.data.Lectures;
 import oh.data.OfficeHoursData;
 import oh.data.TeachingAssistantPrototype;
 import oh.data.TimeSlot;
@@ -289,7 +290,7 @@ public class OfficeHoursWorkspace extends AppWorkspaceComponent {
         ohBuilder.buildLabel(OH_HOME_LABEL, secondRow, CLASS_OH_BANNER_LABEL, ENABLED);
         ohBuilder.buildTextField(OH_INSTHOME_FIELD, secondRow, CLASS_OH_TEXT_FIELD, ENABLED);
         TextArea t = ohBuilder.buildTextArea(OH_INSTTEXTAREA, siteInstructorBox, CLASS_OH_TEXTAREA, 10, 20, ENABLED);
-        ohBuilder.buildTitledPane(OH_INST_OFFICEHOURS, t, siteInstructorBox, CLASS_OH_BANNER_LABEL, ENABLED);
+        ohBuilder.buildTitledPane(OH_INST_OFFICEHOURS, t, siteInstructorBox, CLASS_OH_TITLEDPANE, ENABLED);
         siteContainerBox.setPrefWidth(1000);
         ScrollPane sp = new ScrollPane(siteContainerBox);
         sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -297,58 +298,80 @@ public class OfficeHoursWorkspace extends AppWorkspaceComponent {
         //SYLLABUS LAYOUT
         VBox syllabusContainer = ohBuilder.buildVBox(OH_SYLLABUS_CONTAINER, null, CLASS_OH_SYLLABUS_CONTAINER, ENABLED);
         TextArea t1 = ohBuilder.buildTextArea(OH_DESCRIPTIONTEXT_AREA, syllabusContainer, CLASS_OH_TEXTAREA, 20, 100, ENABLED);
-        ohBuilder.buildTitledPane(OH_DESCRIPTION, t1, syllabusContainer, CLASS_OH_BANNERHEADER_LABEL, ENABLED);
+        ohBuilder.buildTitledPane(OH_DESCRIPTION, t1, syllabusContainer, CLASS_OH_TITLEDPANE, ENABLED);
         TextArea t2 = ohBuilder.buildTextArea(OH_TOPICSTEXT_AREA, syllabusContainer, CLASS_OH_TEXTAREA, 20, 50, ENABLED);
-        ohBuilder.buildTitledPane(OH_TOPICS, t2, syllabusContainer, CLASS_OH_BANNERHEADER_LABEL, ENABLED);
+        ohBuilder.buildTitledPane(OH_TOPICS, t2, syllabusContainer, CLASS_OH_TITLEDPANE, ENABLED);
         TextArea t3 = ohBuilder.buildTextArea(OH_PREREQTEXT_AREA, syllabusContainer, CLASS_OH_TEXTAREA, 20, 50, ENABLED);
-        ohBuilder.buildTitledPane(OH_PREREQ, t3, syllabusContainer, CLASS_OH_BANNERHEADER_LABEL, ENABLED);
+        ohBuilder.buildTitledPane(OH_PREREQ, t3, syllabusContainer, CLASS_OH_TITLEDPANE, ENABLED);
         TextArea t4 = ohBuilder.buildTextArea(OH_OUTCOMESTEXT_AREA, syllabusContainer, CLASS_OH_TEXTAREA, 20, 50, ENABLED);
-        ohBuilder.buildTitledPane(OH_OUTCOMES, t4, syllabusContainer, CLASS_OH_BANNERHEADER_LABEL, ENABLED);
+        ohBuilder.buildTitledPane(OH_OUTCOMES, t4, syllabusContainer, CLASS_OH_TITLEDPANE, ENABLED);
         TextArea t5 = ohBuilder.buildTextArea(OH_TEXTBOOKTEXT_AREA, syllabusContainer, CLASS_OH_TEXTAREA, 20, 50, ENABLED);
-        ohBuilder.buildTitledPane(OH_TEXTBOOK, t5, syllabusContainer, CLASS_OH_BANNERHEADER_LABEL, ENABLED);
+        ohBuilder.buildTitledPane(OH_TEXTBOOK, t5, syllabusContainer, CLASS_OH_TITLEDPANE, ENABLED);
         TextArea t6 = ohBuilder.buildTextArea(OH_GRADEDCOMPONENTSTEXT_AREA, syllabusContainer, CLASS_OH_TEXTAREA, 20, 50, ENABLED);
-        ohBuilder.buildTitledPane(OH_GRADEDCOMPONENTS, t6, syllabusContainer, CLASS_OH_BANNERHEADER_LABEL, ENABLED);
+        ohBuilder.buildTitledPane(OH_GRADEDCOMPONENTS, t6, syllabusContainer, CLASS_OH_TITLEDPANE, ENABLED);
         TextArea t7 = ohBuilder.buildTextArea(OH_GRADINGNOTETEXT_AREA, syllabusContainer, CLASS_OH_TEXTAREA, 20, 50, ENABLED);
-        ohBuilder.buildTitledPane(OH_GRADINGNOTE, t7, syllabusContainer, CLASS_OH_BANNERHEADER_LABEL, ENABLED);
+        ohBuilder.buildTitledPane(OH_GRADINGNOTE, t7, syllabusContainer, CLASS_OH_TITLEDPANE, ENABLED);
         TextArea t8 = ohBuilder.buildTextArea(OH_DISHONESTYTEXT_AREA, syllabusContainer, CLASS_OH_TEXTAREA, 20, 50, ENABLED);
-        ohBuilder.buildTitledPane(OH_DISHONESTY, t8, syllabusContainer, CLASS_OH_BANNERHEADER_LABEL, ENABLED);
+        ohBuilder.buildTitledPane(OH_DISHONESTY, t8, syllabusContainer, CLASS_OH_TITLEDPANE, ENABLED);
         TextArea t9 = ohBuilder.buildTextArea(OH_SPECASSISTANCETEXT_AREA, syllabusContainer, CLASS_OH_TEXTAREA, 20, 50, ENABLED);
-        ohBuilder.buildTitledPane(OH_SPECASSISTANCE, t9, syllabusContainer, CLASS_OH_BANNERHEADER_LABEL, ENABLED);
+        ohBuilder.buildTitledPane(OH_SPECASSISTANCE, t9, syllabusContainer, CLASS_OH_TITLEDPANE, ENABLED);
 
         ScrollPane sp1 = new ScrollPane(syllabusContainer);
         sp1.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         
         //MEETING TIMES
         VBox meetingContainer = ohBuilder.buildVBox(OH_MEETING_CONTAINER, null, CLASS_OH_MEETING, ENABLED);
-        TableView tb = ohBuilder.buildTableView(OH_LECTURE, meetingContainer, CLASS_OH_TABLE_VIEW, ENABLED);
-        TitledPane title1 = ohBuilder.buildTitledPane(OH_LECTURE, tb, meetingContainer, CLASS_OH_BANNERHEADER_LABEL, ENABLED);
+        TableView<Lectures> tb = ohBuilder.buildTableView(OH_LECTURETABLEVIEW, meetingContainer, CLASS_OH_TABLE_VIEW, ENABLED);
+        Button addLectureBt = ohBuilder.buildTextButton(OH_ADDLECTURE_BUTTON, null, CLASS_OH_STYLEBUTTON, ENABLED);
+        Button removeLectureBt = ohBuilder.buildTextButton(OH_REMOVELECTURE_BUTTON, null, CLASS_OH_STYLEBUTTON, ENABLED);
+        TitledPane title1 = ohBuilder.buildButtonTitledPane(OH_LECTURE,addLectureBt,removeLectureBt, tb, meetingContainer, CLASS_OH_TITLEDPANE, ENABLED);    
         TableColumn sectionColumn = ohBuilder.buildTableColumn(OH_SECTION, tb, CLASS_OH_COLUMN);
         TableColumn daysColumn = ohBuilder.buildTableColumn(OH_DAYS, tb, CLASS_OH_COLUMN);
         TableColumn timeColumn = ohBuilder.buildTableColumn(OH_TIME, tb, CLASS_OH_COLUMN);
         TableColumn roomColumn = ohBuilder.buildTableColumn(OH_ROOM_LABEL2, tb, CLASS_OH_COLUMN);
+        sectionColumn.setCellValueFactory(new PropertyValueFactory<String, String>("section"));
+        daysColumn.setCellValueFactory(new PropertyValueFactory<String, String>("days"));
+        timeColumn.setCellValueFactory(new PropertyValueFactory<String, String>("time"));
+        roomColumn.setCellValueFactory(new PropertyValueFactory<String, String>("room"));
         sectionColumn.prefWidthProperty().bind(tb.widthProperty().multiply(1.0 / 4.0));
         daysColumn.prefWidthProperty().bind(tb.widthProperty().multiply(1.0 / 4.0));
         timeColumn.prefWidthProperty().bind(tb.widthProperty().multiply(1.0 / 4.0));
         roomColumn.prefWidthProperty().bind(tb.widthProperty().multiply(1.0 / 4.0));
-        TableView tb2 = ohBuilder.buildTableView(OH_RECITATION, null, CLASS_OH_TABLE_VIEW, ENABLED);
-        TitledPane title2 = ohBuilder.buildTitledPane(OH_RECITATION, tb2, meetingContainer, CLASS_OH_BANNERHEADER_LABEL, ENABLED);
+        TableView tb2 = ohBuilder.buildTableView(OH_RECITATIONTABLEVIEW, null, CLASS_OH_TABLE_VIEW, ENABLED);
+        Button addRecitationBt = ohBuilder.buildTextButton(OH_ADDRECITATION_BUTTON, null, CLASS_OH_STYLEBUTTON, ENABLED);
+        Button removeRecitationBt = ohBuilder.buildTextButton(OH_REMOVERECITATION_BUTTON, null, CLASS_OH_STYLEBUTTON, ENABLED);        
+        TitledPane title2 = ohBuilder.buildButtonTitledPane(OH_RECITATION,addRecitationBt,removeRecitationBt ,tb2, meetingContainer, CLASS_OH_TITLEDPANE, ENABLED);
         TableColumn recSection = ohBuilder.buildTableColumn(OH_RECSECTION, tb2, CLASS_OH_COLUMN);
         TableColumn recDays = ohBuilder.buildTableColumn(OH_DAYSNTIME, tb2, CLASS_OH_COLUMN);
         TableColumn recRoom = ohBuilder.buildTableColumn(OH_RECROOM_LABEL, tb2, CLASS_OH_COLUMN);
         TableColumn recTA1 = ohBuilder.buildTableColumn(OH_TA1, tb2, CLASS_OH_COLUMN);
         TableColumn recTA2 = ohBuilder.buildTableColumn(OH_TA2, tb2, CLASS_OH_COLUMN);
+        recSection.setCellValueFactory(new PropertyValueFactory<String, String>("section"));
+        recDays.setCellValueFactory(new PropertyValueFactory<String, String>("daysTime"));
+        recRoom.setCellValueFactory(new PropertyValueFactory<String, String>("room"));
+        recTA1.setCellValueFactory(new PropertyValueFactory<String, String>("ta1"));
+        recTA2.setCellValueFactory(new PropertyValueFactory<String, String>("ta2"));
+
         recSection.prefWidthProperty().bind(tb2.widthProperty().multiply(1.0 / 5.0));
         recDays.prefWidthProperty().bind(tb2.widthProperty().multiply(1.0 / 5.0));
         recRoom.prefWidthProperty().bind(tb2.widthProperty().multiply(1.0 / 5.0));
         recTA1.prefWidthProperty().bind(tb2.widthProperty().multiply(1.0 / 5.0));
         recTA2.prefWidthProperty().bind(tb2.widthProperty().multiply(1.0 / 5.0));
-        TableView tb3 = ohBuilder.buildTableView(OH_LABS, meetingContainer, CLASS_OH_TABLE_VIEW, ENABLED);
-        TitledPane title3 = ohBuilder.buildTitledPane(OH_LABS, tb3, meetingContainer, CLASS_OH_BANNERHEADER_LABEL, ENABLED);
+        TableView tb3 = ohBuilder.buildTableView(OH_LABSTABLEVIEW, meetingContainer, CLASS_OH_TABLE_VIEW, ENABLED);
+        Button addLabBt = ohBuilder.buildTextButton(OH_ADDLAB_BUTTON, null, CLASS_OH_STYLEBUTTON, ENABLED);
+        Button removeLabBt = ohBuilder.buildTextButton(OH_REMOVELAB_BUTTON, null, CLASS_OH_STYLEBUTTON, ENABLED);          
+        TitledPane title3 = ohBuilder.buildButtonTitledPane(OH_LABS,addLabBt,removeLabBt, tb3, meetingContainer, CLASS_OH_TITLEDPANE, ENABLED);
         TableColumn labSection = ohBuilder.buildTableColumn(OH_LABSECTION, tb3, CLASS_OH_COLUMN);
         TableColumn labDays = ohBuilder.buildTableColumn(OH_LABDAYSNTIME, tb3, CLASS_OH_COLUMN);
         TableColumn labRoom = ohBuilder.buildTableColumn(OH_LABROOM_LABEL, tb3, CLASS_OH_COLUMN);
         TableColumn labTA1 = ohBuilder.buildTableColumn(OH_LABTA1, tb3, CLASS_OH_COLUMN);
         TableColumn labTA2 = ohBuilder.buildTableColumn(OH_LABTA2, tb3, CLASS_OH_COLUMN);
+        labSection.setCellValueFactory(new PropertyValueFactory<String, String>("section"));
+        labDays.setCellValueFactory(new PropertyValueFactory<String, String>("daysTime"));
+        labRoom.setCellValueFactory(new PropertyValueFactory<String, String>("room"));
+        labTA1.setCellValueFactory(new PropertyValueFactory<String, String>("ta1"));
+        labTA2.setCellValueFactory(new PropertyValueFactory<String, String>("ta2"));
+        
         labSection.prefWidthProperty().bind(tb3.widthProperty().multiply(1.0 / 5.0));
         labDays.prefWidthProperty().bind(tb3.widthProperty().multiply(1.0 / 5.0));
         labRoom.prefWidthProperty().bind(tb3.widthProperty().multiply(1.0 / 5.0));
@@ -371,7 +394,7 @@ public class OfficeHoursWorkspace extends AppWorkspaceComponent {
         DatePicker date2 = new DatePicker();
         calendarContainer.getChildren().add(date2);
         TableView scheduleItems = ohBuilder.buildTableView(OH_SCHEDULEITEMS, scheduleContainer, CLASS_OH_TABLE_VIEW, ENABLED);
-        TitledPane scheduleTitle = ohBuilder.buildTitledPane(OH_SCHEDULETITLE, scheduleItems, scheduleContainer, CLASS_OH_BANNERHEADER_LABEL, ENABLED);
+        TitledPane scheduleTitle = ohBuilder.buildTitledPane(OH_SCHEDULETITLE, scheduleItems, scheduleContainer, CLASS_OH_TITLEDPANE, ENABLED);
         TableColumn schedType = ohBuilder.buildTableColumn(OH_SCHEDTYPE, scheduleItems, CLASS_OH_COLUMN);
         TableColumn schedDate = ohBuilder.buildTableColumn(OH_SCHEDDATE, scheduleItems, CLASS_OH_COLUMN);
         TableColumn schedTitle = ohBuilder.buildTableColumn(OH_SCHEDTITLE, scheduleItems, CLASS_OH_COLUMN);
@@ -632,24 +655,21 @@ public class OfficeHoursWorkspace extends AppWorkspaceComponent {
             app.processTransaction(save);               
         });
         
+        Button b1 = (Button) gui.getGUINode(OH_ADDLECTURE_BUTTON);
+        Button b2 = (Button) gui.getGUINode(OH_ADDRECITATION_BUTTON);
+        Button b3 = (Button) gui.getGUINode(OH_ADDLAB_BUTTON);
         
-/*        com1.onMouseClickedProperty().set(e->{
-                         Save_Transaction save = new Save_Transaction();
-            app.processTransaction(save);     
+        
+        b1.setOnAction(e->{
+            controller.processAddLecture();
         });
-        com2.onMouseClickedProperty().set(e->{
-                         Save_Transaction save = new Save_Transaction();
-            app.processTransaction(save);     
+        b2.setOnAction(e->{
+            controller.processAddRecitation();
         });
-        com3.onMouseClickedProperty().set(e->{
-                         Save_Transaction save = new Save_Transaction();
-            app.processTransaction(save);     
+        b3.setOnAction(e->{
+            controller.processAddLab();
         });
-        com4.onMouseClickedProperty().set(e->{
-                         Save_Transaction save = new Save_Transaction();
-            app.processTransaction(save);     
-        });
-      */      
+
         
         
     }

@@ -260,6 +260,9 @@
   .oh_schedule_container{
       -fx-spacing:10;
   }
+  .oh_titledpane{
+      -fx-font-size: 15pt;
+  }
   
 
   

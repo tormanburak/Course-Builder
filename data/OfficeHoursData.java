@@ -15,7 +15,11 @@ import javafx.scene.control.TableView;
 import oh.OfficeHoursApp;
 import static oh.OfficeHoursPropertyType.OH_ALL_RADIO_BUTTON;
 import static oh.OfficeHoursPropertyType.OH_GRAD_RADIO_BUTTON;
+import static oh.OfficeHoursPropertyType.OH_LABSTABLEVIEW;
+import static oh.OfficeHoursPropertyType.OH_LECTURE;
+import static oh.OfficeHoursPropertyType.OH_LECTURETABLEVIEW;
 import static oh.OfficeHoursPropertyType.OH_OFFICE_HOURS_TABLE_VIEW;
+import static oh.OfficeHoursPropertyType.OH_RECITATIONTABLEVIEW;
 import static oh.OfficeHoursPropertyType.OH_TAS_TABLE_VIEW;
 import oh.data.TimeSlot.DayOfWeek;
 
@@ -39,7 +43,9 @@ public class OfficeHoursData implements AppDataComponent {
     ObservableList<TeachingAssistantPrototype> teachingAssistants;
     ObservableList<TimeSlot> officeHours;
     ObservableList<TimeSlot> tempHours;
-
+    ObservableList<Lectures> lectures;
+    ObservableList<Recitations> recitations;
+    ObservableList<Labs> labs;
     // THESE ARE THE TIME BOUNDS FOR THE OFFICE HOURS GRID. NOTE
     // THAT THESE VALUES CAN BE DIFFERENT FOR DIFFERENT FILES, BUT
     // THAT OUR APPLICATION USES THE DEFAULT TIME VALUES AND PROVIDES
@@ -71,6 +77,15 @@ public class OfficeHoursData implements AppDataComponent {
         // GET THE LIST OF TAs FOR THE LEFT TABLE
         TableView<TeachingAssistantPrototype> taTableView = (TableView)gui.getGUINode(OH_TAS_TABLE_VIEW);
         teachingAssistants = taTableView.getItems();
+        
+        TableView<Lectures> lectureTableView = (TableView<Lectures>) gui.getGUINode(OH_LECTURETABLEVIEW);
+        lectures = lectureTableView.getItems();
+        
+        TableView<Recitations> recTableView = (TableView<Recitations>) gui.getGUINode(OH_RECITATIONTABLEVIEW);
+        recitations = recTableView.getItems();
+        
+        TableView<Labs> labsTableView = (TableView<Labs>) gui.getGUINode(OH_LABSTABLEVIEW);
+        labs = labsTableView.getItems();
 
         // THESE ARE THE DEFAULT OFFICE HOURS
         startHour = MIN_START_HOUR;
@@ -440,5 +455,23 @@ public class OfficeHoursData implements AppDataComponent {
                    officeHoursTableView.setItems(tempHours);
             
             
+    }
+    public void addLecture(Lectures lecture){
+         lectures.add(lecture);
+            }
+    public void removeLecture(Lectures lecture){
+        lectures.remove(lecture);
+    }
+    public void addRecitation(Recitations rec){
+        recitations.add(rec);
+    }
+    public void removeRecitation(Recitations rec){
+        recitations.remove(rec);
+    }
+    public void addLab(Labs lab){
+        labs.add(lab);
+    }
+    public void removeLab(Labs lab){
+        labs.remove(lab);
     }
 }

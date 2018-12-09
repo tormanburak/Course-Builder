@@ -2,6 +2,7 @@ package oh.workspace.controllers;
 
 import djf.modules.AppGUIModule;
 import djf.ui.dialogs.AppDialogsFacade;
+import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
@@ -16,7 +17,10 @@ import static oh.OfficeHoursPropertyType.OH_NO_TA_SELECTED_TITLE;
 import static oh.OfficeHoursPropertyType.OH_OFFICE_HOURS_TABLE_VIEW;
 import static oh.OfficeHoursPropertyType.OH_TAS_TABLE_VIEW;
 import static oh.OfficeHoursPropertyType.OH_TA_EDIT_DIALOG;
+import oh.data.Labs;
+import oh.data.Lectures;
 import oh.data.OfficeHoursData;
+import oh.data.Recitations;
 import oh.data.TAType;
 import oh.data.TeachingAssistantPrototype;
 import oh.data.TimeSlot;
@@ -24,6 +28,9 @@ import oh.data.TimeSlot.DayOfWeek;
 import oh.transactions.AddTA_Transaction;
 import oh.transactions.EditTA_Transaction;
 import oh.transactions.ToggleOfficeHours_Transaction;
+import oh.transactions.addLabs_Transaction;
+import oh.transactions.addLecture_Transaction;
+import oh.transactions.addRecitation_Transaction;
 import oh.workspace.dialogs.TADialog;
 
 /**
@@ -132,5 +139,38 @@ public class OfficeHoursController {
         OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
         data.updateTimeSlot(start, end);
         
+    }
+    public void processAddLecture(){
+        AppGUIModule gui = app.getGUIModule();
+        OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
+            Lectures lec = new Lectures("?","?","?","?");
+            addLecture_Transaction addlectureTransaction = new addLecture_Transaction(data, lec);
+            app.processTransaction(addlectureTransaction);
+
+           
+        
+        app.getFoolproofModule().updateControls(OH_FOOLPROOF_SETTINGS);
+    }
+    public void processAddRecitation(){
+                AppGUIModule gui = app.getGUIModule();
+        OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
+            Recitations rec = new Recitations("?","?","?","?","?","?","?");
+            addRecitation_Transaction addrecTransaction = new addRecitation_Transaction(data, rec);
+            app.processTransaction(addrecTransaction);
+
+           
+        
+        app.getFoolproofModule().updateControls(OH_FOOLPROOF_SETTINGS);
+    }
+       public void processAddLab(){
+                AppGUIModule gui = app.getGUIModule();
+        OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
+            Labs rec = new Labs("?","?","?","?","?","?","?");
+            addLabs_Transaction addrecTransaction = new addLabs_Transaction(data, rec);
+            app.processTransaction(addrecTransaction);
+
+           
+        
+        app.getFoolproofModule().updateControls(OH_FOOLPROOF_SETTINGS);
     }
 }
