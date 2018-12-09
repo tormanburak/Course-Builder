@@ -4,6 +4,7 @@ import djf.modules.AppGUIModule;
 import djf.ui.dialogs.AppDialogsFacade;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Button;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -11,10 +12,14 @@ import javafx.stage.Stage;
 import oh.OfficeHoursApp;
 import static oh.OfficeHoursPropertyType.OH_EMAIL_TEXT_FIELD;
 import static oh.OfficeHoursPropertyType.OH_FOOLPROOF_SETTINGS;
+import static oh.OfficeHoursPropertyType.OH_LECTURETABLEVIEW;
 import static oh.OfficeHoursPropertyType.OH_NAME_TEXT_FIELD;
 import static oh.OfficeHoursPropertyType.OH_NO_TA_SELECTED_CONTENT;
 import static oh.OfficeHoursPropertyType.OH_NO_TA_SELECTED_TITLE;
 import static oh.OfficeHoursPropertyType.OH_OFFICE_HOURS_TABLE_VIEW;
+import static oh.OfficeHoursPropertyType.OH_REMOVELAB_BUTTON;
+import static oh.OfficeHoursPropertyType.OH_REMOVELECTURE_BUTTON;
+import static oh.OfficeHoursPropertyType.OH_REMOVERECITATION_BUTTON;
 import static oh.OfficeHoursPropertyType.OH_TAS_TABLE_VIEW;
 import static oh.OfficeHoursPropertyType.OH_TA_EDIT_DIALOG;
 import oh.data.Labs;
@@ -31,6 +36,9 @@ import oh.transactions.ToggleOfficeHours_Transaction;
 import oh.transactions.addLabs_Transaction;
 import oh.transactions.addLecture_Transaction;
 import oh.transactions.addRecitation_Transaction;
+import oh.transactions.removeLabs_Transaction;
+import oh.transactions.removeLecture_Transaction;
+import oh.transactions.removeRecitation_Transaction;
 import oh.workspace.dialogs.TADialog;
 
 /**
@@ -135,6 +143,51 @@ public class OfficeHoursController {
         TableView<TimeSlot> officeHoursTableView = (TableView) gui.getGUINode(OH_OFFICE_HOURS_TABLE_VIEW);
         officeHoursTableView.refresh();
     }
+    public void processSelectLecture(){
+            AppGUIModule gui = app.getGUIModule();
+            OfficeHoursData data = (OfficeHoursData)app.getDataComponent();
+            Lectures lec = data.getSelectedLecture();
+            Button b1 = (Button) gui.getGUINode(OH_REMOVELECTURE_BUTTON);
+            b1.setDisable(false);
+            b1.setOnAction(e->{
+              removeLecture_Transaction transaction = new removeLecture_Transaction(data,lec);
+                app.processTransaction(transaction);
+                           b1.setDisable(true);
+
+            });
+               
+        
+    }
+    public void processSelectRecitation(){
+            AppGUIModule gui = app.getGUIModule();
+            OfficeHoursData data = (OfficeHoursData)app.getDataComponent();
+            Recitations lec = data.getSelectedRecitation();
+            Button b1 = (Button) gui.getGUINode(OH_REMOVERECITATION_BUTTON);
+            b1.setDisable(false);
+            b1.setOnAction(e->{
+              removeRecitation_Transaction transaction = new removeRecitation_Transaction(data,lec);
+                app.processTransaction(transaction);
+                           b1.setDisable(true);
+
+            });
+               
+        
+    }
+    public void processSelectLab(){
+            AppGUIModule gui = app.getGUIModule();
+            OfficeHoursData data = (OfficeHoursData)app.getDataComponent();
+            Labs lec = data.getSelectedLab();
+            Button b1 = (Button) gui.getGUINode(OH_REMOVELAB_BUTTON);
+            b1.setDisable(false);
+            b1.setOnAction(e->{
+              removeLabs_Transaction transaction = new removeLabs_Transaction(data,lec);
+                app.processTransaction(transaction);
+                           b1.setDisable(true);
+
+            });
+               
+        
+    }    
     public void processOfficeHoursTimeRange(int start, int end){
         OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
         data.updateTimeSlot(start, end);

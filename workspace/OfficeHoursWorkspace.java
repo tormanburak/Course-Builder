@@ -534,7 +534,18 @@ public class OfficeHoursWorkspace extends AppWorkspaceComponent {
             }
             controller.processSelectTA();
         });
-
+        TableView lecTW = (TableView) gui.getGUINode(OH_LECTURETABLEVIEW);
+        lecTW.setOnMouseClicked(e->{
+            controller.processSelectLecture();
+        });
+        TableView recTW = (TableView) gui.getGUINode(OH_RECITATIONTABLEVIEW);
+        recTW.setOnMouseClicked(e->{
+            controller.processSelectRecitation();
+        });
+        TableView labTW = (TableView) gui.getGUINode(OH_LABSTABLEVIEW);
+        labTW.setOnMouseClicked(e->{
+            controller.processSelectLab();
+        });
         RadioButton allRadio = (RadioButton) gui.getGUINode(OH_ALL_RADIO_BUTTON);
         allRadio.setOnAction(e -> {
             controller.processSelectAllTAs();
@@ -658,6 +669,9 @@ public class OfficeHoursWorkspace extends AppWorkspaceComponent {
         Button b1 = (Button) gui.getGUINode(OH_ADDLECTURE_BUTTON);
         Button b2 = (Button) gui.getGUINode(OH_ADDRECITATION_BUTTON);
         Button b3 = (Button) gui.getGUINode(OH_ADDLAB_BUTTON);
+        Button removeb1 = (Button) gui.getGUINode(OH_REMOVELECTURE_BUTTON);
+        Button removeb2 = (Button) gui.getGUINode(OH_REMOVERECITATION_BUTTON);
+        Button removeb3 = (Button) gui.getGUINode(OH_REMOVELAB_BUTTON);
         
         
         b1.setOnAction(e->{
@@ -668,6 +682,9 @@ public class OfficeHoursWorkspace extends AppWorkspaceComponent {
         });
         b3.setOnAction(e->{
             controller.processAddLab();
+        });
+        removeb1.setOnAction(e->{
+            
         });
 
         

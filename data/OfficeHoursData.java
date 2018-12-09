@@ -272,7 +272,21 @@ public class OfficeHoursData implements AppDataComponent {
         TableView<TeachingAssistantPrototype> tasTable = (TableView)gui.getGUINode(OH_TAS_TABLE_VIEW);
         return tasTable.getSelectionModel().getSelectedItem();
     }
-    
+    public Lectures getSelectedLecture() {
+        AppGUIModule gui = app.getGUIModule();
+        TableView<Lectures> tasTable = (TableView)gui.getGUINode(OH_LECTURETABLEVIEW);
+        return tasTable.getSelectionModel().getSelectedItem();
+    }
+    public Recitations getSelectedRecitation() {
+        AppGUIModule gui = app.getGUIModule();
+        TableView<Recitations> tasTable = (TableView)gui.getGUINode(OH_RECITATIONTABLEVIEW);
+        return tasTable.getSelectionModel().getSelectedItem();
+    }
+    public Labs getSelectedLab() {
+        AppGUIModule gui = app.getGUIModule();
+        TableView<Labs> tasTable = (TableView)gui.getGUINode(OH_LABSTABLEVIEW);
+        return tasTable.getSelectionModel().getSelectedItem();
+    }    
     public HashMap<TimeSlot, ArrayList<DayOfWeek>> getTATimeSlots(TeachingAssistantPrototype ta) {
         HashMap<TimeSlot, ArrayList<DayOfWeek>> timeSlots = new HashMap();
         for (TimeSlot timeSlot : officeHours) {
