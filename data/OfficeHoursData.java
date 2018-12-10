@@ -441,6 +441,16 @@ public class OfficeHoursData implements AppDataComponent {
     public Iterator<ScheduleItem> scheduleItemIterator(){
         return scheduleItem.iterator();
     }
+    public Iterator<Lectures> lecturesIterator(){
+        return lectures.iterator();
+    }
+    public Iterator<Recitations> recitationsIterator(){
+        return recitations.iterator();
+    }
+    public Iterator<Labs> labsIterator(){
+        return labs.iterator();
+                
+    }
     
     private class AllTAsIterator implements Iterator {
         Iterator gradIt = allTAs.get(TAType.Graduate).iterator();

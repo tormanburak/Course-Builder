@@ -58,6 +58,7 @@ import oh.transactions.Save_Transaction;
 import oh.transactions.editLab_Transaction;
 import oh.transactions.editLecture_Transaction;
 import oh.transactions.editRec_Transaction;
+import oh.transactions.editScheduleItem_Transaction;
 import oh.workspace.controllers.OfficeHoursController;
 import oh.workspace.dialogs.TADialog;
 import oh.workspace.foolproof.OfficeHoursFoolproofDesign;
@@ -587,12 +588,63 @@ public class OfficeHoursWorkspace extends AppWorkspaceComponent {
         date2.setValue(LocalDate.now());
         calendarContainer.getChildren().add(date2);
         TableView<ScheduleItem> scheduleItems = ohBuilder.buildTableView(OH_SCHEDULEITEMS, scheduleContainer, CLASS_OH_TABLE_VIEW, ENABLED);
+        scheduleItems.setEditable(true);
         Button removeItemBt = ohBuilder.buildTextButton(OH_REMOVEITEM_BUTTON, null, CLASS_OH_STYLEBUTTON, ENABLED);                  
         TitledPane scheduleTitle = ohBuilder.buildButtonTitledPane(OH_SCHEDULETITLE, removeItemBt,scheduleItems, scheduleContainer, CLASS_OH_TITLEDPANE, ENABLED);
         TableColumn schedType = ohBuilder.buildTableColumn(OH_SCHEDTYPE, scheduleItems, CLASS_OH_CENTERED_COLUMN);
+        schedType.setCellFactory(TextFieldTableCell.forTableColumn());
+        schedType.setOnEditCommit(new EventHandler<CellEditEvent<ScheduleItem,String>>(){
+            @Override
+            public void handle(CellEditEvent<ScheduleItem, String> t) {
+                OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
+                ScheduleItem lec = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                editScheduleItem_Transaction transaction = new editScheduleItem_Transaction(lec,data,t.getNewValue(),lec.getDate(),lec.getTitle(),lec.getTopic());
+                app.processTransaction(transaction);
+                t.getTableView().getItems().get(t.getTablePosition().getRow()).setType(t.getNewValue());
+            }
+            
+        });
+                
+                
         TableColumn schedDate = ohBuilder.buildTableColumn(OH_SCHEDDATE, scheduleItems, CLASS_OH_CENTERED_COLUMN);
+        schedDate.setCellFactory(TextFieldTableCell.forTableColumn());
+        schedDate.setOnEditCommit(new EventHandler<CellEditEvent<ScheduleItem,String>>(){
+            @Override
+            public void handle(CellEditEvent<ScheduleItem, String> t) {
+                OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
+                ScheduleItem lec = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                editScheduleItem_Transaction transaction = new editScheduleItem_Transaction(lec,data,lec.getType(),t.getNewValue(),lec.getTitle(),lec.getTopic());
+                app.processTransaction(transaction);
+                t.getTableView().getItems().get(t.getTablePosition().getRow()).setDate(t.getNewValue());
+            }
+            
+        });
         TableColumn schedTitle = ohBuilder.buildTableColumn(OH_SCHEDTITLE, scheduleItems, CLASS_OH_CENTERED_COLUMN);
+        schedTitle.setCellFactory(TextFieldTableCell.forTableColumn());
+        schedTitle.setOnEditCommit(new EventHandler<CellEditEvent<ScheduleItem,String>>(){
+            @Override
+            public void handle(CellEditEvent<ScheduleItem, String> t) {
+                OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
+                ScheduleItem lec = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                editScheduleItem_Transaction transaction = new editScheduleItem_Transaction(lec,data,lec.getType(),lec.getDate(),t.getNewValue(),lec.getTopic());
+                app.processTransaction(transaction);
+                t.getTableView().getItems().get(t.getTablePosition().getRow()).setTitle(t.getNewValue());
+            }
+            
+        });
         TableColumn schedTopic = ohBuilder.buildTableColumn(OH_SCHEDTOPIC, scheduleItems, CLASS_OH_CENTERED_COLUMN);
+        schedTopic.setCellFactory(TextFieldTableCell.forTableColumn());
+        schedTopic.setOnEditCommit(new EventHandler<CellEditEvent<ScheduleItem,String>>(){
+            @Override
+            public void handle(CellEditEvent<ScheduleItem, String> t) {
+                OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
+                ScheduleItem lec = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                editScheduleItem_Transaction transaction = new editScheduleItem_Transaction(lec,data,lec.getType(),lec.getDate(),lec.getTitle(),t.getNewValue());
+                app.processTransaction(transaction);
+                t.getTableView().getItems().get(t.getTablePosition().getRow()).setTopic(t.getNewValue());
+            }
+            
+        });
         scheduleTitle.setExpanded(ENABLED);
         schedType.setCellValueFactory(new PropertyValueFactory<String, String>("type"));
         schedDate.setCellValueFactory(new PropertyValueFactory<String, String>("date"));

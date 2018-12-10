@@ -28,6 +28,7 @@ public class Recitations extends Lectures {
        
     }
 
+
     public String getDaysTime() {
         return daysTime;
     }

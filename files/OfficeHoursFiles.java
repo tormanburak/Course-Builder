@@ -14,6 +14,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -44,7 +45,11 @@ import static oh.OfficeHoursPropertyType.OH_PREREQTEXT_AREA;
 import static oh.OfficeHoursPropertyType.OH_SPECASSISTANCETEXT_AREA;
 import static oh.OfficeHoursPropertyType.OH_TEXTBOOKTEXT_AREA;
 import static oh.OfficeHoursPropertyType.OH_TOPICSTEXT_AREA;
+import oh.data.Labs;
+import oh.data.Lectures;
 import oh.data.OfficeHoursData;
+import oh.data.Recitations;
+import oh.data.ScheduleItem;
 import oh.data.TAType;
 import oh.data.TeachingAssistantPrototype;
 import oh.data.TimeSlot;
@@ -77,6 +82,10 @@ public class OfficeHoursFiles implements AppFileComponent {
     static final String JSON_WEDNESDAY = "wednesday";
     static final String JSON_THURSDAY = "thursday";
     static final String JSON_FRIDAY = "friday";
+    static final String JSON_LECTURES = "lectures";
+    static final String JSON_RECITATIONS ="recitations";
+    static final String JSON_LABS = "labs";
+    static final String JSON_SCHEDULEITEMS ="scheduleItems";
     
     static final String JSON_SUBJECT= "subject";
     static final String JSON_NUMBER= "number";
@@ -97,7 +106,30 @@ public class OfficeHoursFiles implements AppFileComponent {
     static final String JSON_GRADEDCOMPONENTS= "gradedcomponents";
     static final String JSON_GRADINGNOTE= "gradingnote";
     static final String JSON_DISHONESTY= "dishonesty";    
-    static final String JSON_SPEC = "special assistance";    
+    static final String JSON_SPEC = "special assistance";  
+    
+    static final String JSON_LECSECTION = "section";
+    static final String JSON_LECROOM = "room";
+    static final String JSON_LECDAYS = "days";
+    static final String JSON_LECTIME = "time";
+    
+    static final String JSON_RECSECTION = "section";
+    static final String JSON_RECROOM = "room";
+    static final String JSON_RECDAYS = "days";
+    static final String JSON_RECTA1 = "ta1";
+    static final String JSON_RECTA2 = "ta2";
+    
+    static final String JSON_LABSECTION = "section";
+    static final String JSON_LABROOM = "room";
+    static final String JSON_LABDAYS = "days";
+    static final String JSON_LABTA1 = "ta1";
+    static final String JSON_LABTA2 = "ta2";    
+    
+    static final String JSON_SCHEDULETYPE = "schedule";
+    static final String JSON_SCHEDULEDATE = "date";
+    static final String JSON_SCHEDULETITLE = "title";
+    static final String JSON_SCHEDULETOPIC = "topic";
+
     
     public OfficeHoursFiles(OfficeHoursApp initApp) {
         app = initApp;
@@ -122,6 +154,10 @@ public class OfficeHoursFiles implements AppFileComponent {
         // LOAD ALL THE GRAD TAs
         loadTAs(dataManager, json, JSON_GRAD_TAS);
         loadTAs(dataManager, json, JSON_UNDERGRAD_TAS);
+        loadLectures(dataManager,json,JSON_LECTURES);
+        loadRecitations(dataManager,json,JSON_RECITATIONS);
+        loadLabs(dataManager,json,JSON_LABS);
+        loadScheduleItem(dataManager,json,JSON_SCHEDULEITEMS);
         String s1 = json.getString(JSON_SUBJECT);
         String s2 = json.getString(JSON_YEAR);
         String s3 = json.getString(JSON_SEMESTER);
@@ -218,7 +254,57 @@ public class OfficeHoursFiles implements AppFileComponent {
             data.addTA(ta);
         }     
     }
-      
+    private void loadLectures(OfficeHoursData data, JsonObject json, String tas) {
+        JsonArray jsonTAArray = json.getJsonArray(tas);
+        for (int i = 0; i < jsonTAArray.size(); i++) {
+            JsonObject jsonTA = jsonTAArray.getJsonObject(i);
+            String section = jsonTA.getString(JSON_LECSECTION);
+            String room = jsonTA.getString(JSON_LECROOM);
+            String days = jsonTA.getString(JSON_LECDAYS);
+            String time = jsonTA.getString(JSON_LECTIME);
+            Lectures lec = new Lectures(section,room,time,days);
+            data.addLecture(lec);
+        }     
+    } 
+    private void loadRecitations(OfficeHoursData data, JsonObject json, String tas) {
+        JsonArray jsonTAArray = json.getJsonArray(tas);
+        for (int i = 0; i < jsonTAArray.size(); i++) {
+            JsonObject jsonTA = jsonTAArray.getJsonObject(i);
+            String section = jsonTA.getString(JSON_RECSECTION);
+            String room = jsonTA.getString(JSON_RECROOM);
+            String days = jsonTA.getString(JSON_RECDAYS);
+            String ta1 = jsonTA.getString(JSON_RECTA1);
+            String ta2 = jsonTA.getString(JSON_RECTA2);
+            Recitations rec = new Recitations(ta1,ta2,days,section,room,days,days);
+            data.addRecitation(rec);
+        }     
+    }      
+    private void loadLabs(OfficeHoursData data, JsonObject json, String tas) {
+        JsonArray jsonTAArray = json.getJsonArray(tas);
+        for (int i = 0; i < jsonTAArray.size(); i++) {
+            JsonObject jsonTA = jsonTAArray.getJsonObject(i);
+            String section = jsonTA.getString(JSON_LABSECTION);
+            String room = jsonTA.getString(JSON_LABROOM);
+            String days = jsonTA.getString(JSON_LABDAYS);
+            String ta1 = jsonTA.getString(JSON_LABTA1);
+            String ta2 = jsonTA.getString(JSON_LABTA2);
+            Labs lab = new Labs(ta1,ta2,days,section,room,days,days);
+            data.addLab(lab);
+        }     
+    }
+    private void loadScheduleItem(OfficeHoursData data, JsonObject json, String tas){
+        JsonArray jsonTAArray = json.getJsonArray(tas);
+        for (int i = 0; i < jsonTAArray.size(); i++) {
+            JsonObject jsonTA = jsonTAArray.getJsonObject(i);
+            String type = jsonTA.getString(JSON_SCHEDULETYPE);
+            String date = jsonTA.getString(JSON_SCHEDULEDATE);
+            String title = jsonTA.getString(JSON_SCHEDULETITLE);
+            String topic = jsonTA.getString(JSON_SCHEDULETOPIC);
+            ScheduleItem item = new ScheduleItem(type,date,title,topic);
+            data.addScheduleItem(item);
+        }             
+    }
+    
     // HELPER METHOD FOR LOADING DATA FROM A JSON FORMAT
     private JsonObject loadJSONFile(String jsonFilePath) throws IOException {
 	InputStream is = new FileInputStream(jsonFilePath);
@@ -272,7 +358,66 @@ public class OfficeHoursFiles implements AppFileComponent {
                 }
             }
 	}
+        //save lectures
+        JsonArrayBuilder lecturesArrayBuilder = Json.createArrayBuilder();
+        Iterator<Lectures> iteratorLectures = dataManager.lecturesIterator();
+        while(iteratorLectures.hasNext()){
+            Lectures lec = iteratorLectures.next();
+            JsonObject lecJson = Json.createObjectBuilder()
+                    .add(JSON_LECSECTION,lec.getSection())
+                    .add(JSON_LECROOM,lec.getRoom())
+                    .add(JSON_LECDAYS, lec.getDays())
+                    .add(JSON_LECTIME, lec.getTime()).build();
+                    lecturesArrayBuilder.add(lecJson);
+        }
+        //save recitations
+        JsonArrayBuilder recitationsArrayBuilder = Json.createArrayBuilder();
+        Iterator<Recitations> iteratorRecitations = dataManager.recitationsIterator();
+        while(iteratorRecitations.hasNext()){
+            Recitations lec = iteratorRecitations.next();
+            JsonObject lecJson = Json.createObjectBuilder()
+                    .add(JSON_RECSECTION,lec.getSection())
+                    .add(JSON_RECROOM,lec.getRoom())
+                    .add(JSON_RECDAYS, lec.getDaysTime())
+                    .add(JSON_RECTA1, lec.getTa1())
+                    .add(JSON_RECTA2,lec.getTa2())
+                    .build();
+                    recitationsArrayBuilder.add(lecJson);
+        }        
+        
+        JsonArrayBuilder labsArrayBuilder = Json.createArrayBuilder();
+        Iterator<Labs> iteratorLabs = dataManager.labsIterator();
+        while(iteratorLabs.hasNext()){
+            Labs lab = iteratorLabs.next();
+            JsonObject lecJson = Json.createObjectBuilder()
+                    .add(JSON_LABSECTION,lab.getSection())
+                    .add(JSON_LABROOM,lab.getRoom())
+                    .add(JSON_LABDAYS, lab.getDaysTime())
+                    .add(JSON_LABTA1,lab.getTa1())
+                    .add(JSON_LABTA2,lab.getTa2())
+                    .build();
+                    labsArrayBuilder.add(lecJson);
+        }
+        
+        JsonArrayBuilder scheduleItemBuilder = Json.createArrayBuilder();
+        Iterator<ScheduleItem> iteratorScheduleItem = dataManager.scheduleItemIterator();
+        while(iteratorScheduleItem.hasNext()){
+            ScheduleItem scheduleItem = iteratorScheduleItem.next();
+            JsonObject lecJson = Json.createObjectBuilder()
+                    .add(JSON_SCHEDULETYPE,scheduleItem.getType())
+                    .add(JSON_SCHEDULEDATE,scheduleItem.getDate())
+                    .add(JSON_SCHEDULETITLE,scheduleItem.getTitle())
+                    .add(JSON_SCHEDULETOPIC,scheduleItem.getTopic())
+                    .build();
+                    scheduleItemBuilder.add(lecJson);
+        }
+        
 	JsonArray officeHoursArray = officeHoursArrayBuilder.build();
+        JsonArray lecturesArray = lecturesArrayBuilder.build();
+        JsonArray recitationArray = recitationsArrayBuilder.build();
+        JsonArray labsArray = labsArrayBuilder.build();
+        JsonArray scheduleArray = scheduleItemBuilder.build();
+        
         ComboBox cb = (ComboBox) gui.getGUINode(OH_BANNERSUBJECT_COMBOBOX);
         String str = cb.getValue().toString();
         
@@ -352,6 +497,10 @@ public class OfficeHoursFiles implements AppFileComponent {
                 .add(JSON_GRADINGNOTE, strarea7)
                 .add(JSON_DISHONESTY, strarea8)
                 .add(JSON_SPEC, strarea9)
+                .add(JSON_LECTURES,lecturesArray)
+                .add(JSON_RECITATIONS, recitationArray)
+                .add(JSON_LABS, labsArray)
+                .add(JSON_SCHEDULEITEMS, scheduleArray)
                 .build();
 	
 	// AND NOW OUTPUT IT TO A JSON FILE WITH PRETTY PRINTING
