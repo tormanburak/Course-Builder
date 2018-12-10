@@ -3,6 +3,7 @@ package oh.data;
 import javafx.collections.ObservableList;
 import djf.components.AppDataComponent;
 import djf.modules.AppGUIModule;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -48,6 +49,7 @@ public class OfficeHoursData implements AppDataComponent {
     ObservableList<Recitations> recitations;
     ObservableList<Labs> labs;
     ObservableList<ScheduleItem> scheduleItem;
+    ObservableList<ScheduleItem> tempScheduleItem;
     // THESE ARE THE TIME BOUNDS FOR THE OFFICE HOURS GRID. NOTE
     // THAT THESE VALUES CAN BE DIFFERENT FOR DIFFERENT FILES, BUT
     // THAT OUR APPLICATION USES THE DEFAULT TIME VALUES AND PROVIDES
@@ -436,6 +438,9 @@ public class OfficeHoursData implements AppDataComponent {
     public Iterator<TeachingAssistantPrototype> teachingAssistantsIterator() {
         return new AllTAsIterator();
     }
+    public Iterator<ScheduleItem> scheduleItemIterator(){
+        return scheduleItem.iterator();
+    }
     
     private class AllTAsIterator implements Iterator {
         Iterator gradIt = allTAs.get(TAType.Graduate).iterator();
@@ -480,6 +485,23 @@ public class OfficeHoursData implements AppDataComponent {
             
             
     }
+    public void updateScheduleItem(LocalDate d1 , LocalDate d2){
+        AppGUIModule gui = app.getGUIModule();
+        tempScheduleItem = FXCollections.observableArrayList();
+         Iterator<ScheduleItem> item = scheduleItem.iterator();
+
+        while(item.hasNext()){
+            ScheduleItem sc = item.next();
+            LocalDate date = LocalDate.parse(sc.getDate());
+            int min = date.compareTo(d1);
+            int max = date.compareTo(d2);
+            if(min >= 0 && max <= 0){
+                tempScheduleItem.add(sc);
+            }
+        }
+        TableView<ScheduleItem> itemtable = (TableView<ScheduleItem>) gui.getGUINode(OH_SCHEDULEITEMS);
+        itemtable.setItems(tempScheduleItem);
+    }
     public void addLecture(Lectures lecture){
          lectures.add(lecture);
             }
@@ -500,8 +522,51 @@ public class OfficeHoursData implements AppDataComponent {
     }
     public void addScheduleItem(ScheduleItem item){
         scheduleItem.add(item);
+        AppGUIModule gui = app.getGUIModule();
+        OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
+        
+        TableView<ScheduleItem> itemtable = (TableView<ScheduleItem>) gui.getGUINode(OH_SCHEDULEITEMS);
+        itemtable.setItems(scheduleItem);
     }
     public void removeScheduleItem(ScheduleItem item){
         scheduleItem.remove(item);
+        AppGUIModule gui = app.getGUIModule();
+        OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
+        
+        TableView<ScheduleItem> itemtable = (TableView<ScheduleItem>) gui.getGUINode(OH_SCHEDULEITEMS);
+        itemtable.setItems(scheduleItem);
+        
+    }
+    public void refreshLectures(){
+        AppGUIModule gui = app.getGUIModule();
+        OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
+        
+        TableView<Lectures> tb = (TableView) gui.getGUINode(OH_LECTURETABLEVIEW);
+        tb.setItems(lectures);
+        tb.refresh();
+    }
+    public void refreshRecitations(){
+        AppGUIModule gui = app.getGUIModule();
+        OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
+        
+        TableView<Recitations> tb = (TableView) gui.getGUINode(OH_RECITATIONTABLEVIEW);
+        tb.setItems(recitations);
+        tb.refresh();
+    }
+    public void refreshLabs(){
+                AppGUIModule gui = app.getGUIModule();
+        OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
+        
+        TableView<Labs> tb = (TableView) gui.getGUINode(OH_LABSTABLEVIEW);
+        tb.setItems(labs);
+        tb.refresh();
+    }
+    public void refreshScheduleItems(){
+                AppGUIModule gui = app.getGUIModule();
+        OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
+        
+        TableView<ScheduleItem> tb = (TableView) gui.getGUINode(OH_SCHEDULEITEMS);
+        tb.setItems(scheduleItem);
+        tb.refresh();
     }
 }

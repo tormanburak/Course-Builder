@@ -12,6 +12,7 @@ import java.util.Date;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -26,14 +27,17 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -43,12 +47,17 @@ import properties_manager.PropertiesManager;
 import oh.OfficeHoursApp;
 import oh.OfficeHoursPropertyType;
 import static oh.OfficeHoursPropertyType.*;
+import oh.data.Labs;
 import oh.data.Lectures;
 import oh.data.OfficeHoursData;
+import oh.data.Recitations;
 import oh.data.ScheduleItem;
 import oh.data.TeachingAssistantPrototype;
 import oh.data.TimeSlot;
 import oh.transactions.Save_Transaction;
+import oh.transactions.editLab_Transaction;
+import oh.transactions.editLecture_Transaction;
+import oh.transactions.editRec_Transaction;
 import oh.workspace.controllers.OfficeHoursController;
 import oh.workspace.dialogs.TADialog;
 import oh.workspace.foolproof.OfficeHoursFoolproofDesign;
@@ -60,6 +69,8 @@ import static oh.workspace.style.OHStyle.*;
  */
 public class OfficeHoursWorkspace extends AppWorkspaceComponent {
     DatePicker dp2;
+    DatePicker date1;
+    DatePicker date2;
     public OfficeHoursWorkspace(OfficeHoursApp app) {
         super(app);
 
@@ -323,13 +334,67 @@ public class OfficeHoursWorkspace extends AppWorkspaceComponent {
         //MEETING TIMES
         VBox meetingContainer = ohBuilder.buildVBox(OH_MEETING_CONTAINER, null, CLASS_OH_MEETING, ENABLED);
         TableView<Lectures> tb = ohBuilder.buildTableView(OH_LECTURETABLEVIEW, meetingContainer, CLASS_OH_TABLE_VIEW, ENABLED);
+        tb.setEditable(true);
         Button addLectureBt = ohBuilder.buildTextButton(OH_ADDLECTURE_BUTTON, null, CLASS_OH_STYLEBUTTON, ENABLED);
         Button removeLectureBt = ohBuilder.buildTextButton(OH_REMOVELECTURE_BUTTON, null, CLASS_OH_STYLEBUTTON, ENABLED);
         TitledPane title1 = ohBuilder.buildButtonTitledPane(OH_LECTURE,addLectureBt,removeLectureBt, tb, meetingContainer, CLASS_OH_TITLEDPANE, ENABLED);    
         TableColumn sectionColumn = ohBuilder.buildTableColumn(OH_SECTION, tb, CLASS_OH_CENTERED_COLUMN);
+        sectionColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        sectionColumn.setOnEditCommit(new EventHandler<CellEditEvent<Lectures,String>>(){
+            @Override
+            public void handle(CellEditEvent<Lectures, String> t) {
+                OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
+                Lectures lec = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                editLecture_Transaction transaction = new editLecture_Transaction(lec,data,t.getNewValue(),lec.getRoom(),lec.getDays(),lec.getTime());
+                app.processTransaction(transaction);
+                t.getTableView().getItems().get(t.getTablePosition().getRow()).setSection(t.getNewValue());
+               
+            }
+            
+        });
         TableColumn daysColumn = ohBuilder.buildTableColumn(OH_DAYS, tb, CLASS_OH_CENTERED_COLUMN);
+        daysColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        daysColumn.setOnEditCommit(new EventHandler<CellEditEvent<Lectures, String>>(){
+            @Override
+            public void handle(CellEditEvent<Lectures, String> t) {
+                OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
+                Lectures lec = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                editLecture_Transaction transaction = new editLecture_Transaction(lec,data,lec.getSection(),lec.getRoom(),t.getNewValue(),lec.getTime());
+                app.processTransaction(transaction);
+                t.getTableView().getItems().get(t.getTablePosition().getRow()).setDays(t.getNewValue());
+            }
+        
+    });
+        
+        
         TableColumn timeColumn = ohBuilder.buildTableColumn(OH_TIME, tb, CLASS_OH_CENTERED_COLUMN);
+        timeColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        timeColumn.setOnEditCommit(new EventHandler<CellEditEvent<Lectures, String>>(){
+            @Override
+            public void handle(CellEditEvent<Lectures, String> t) {
+                OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
+                Lectures lec = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                editLecture_Transaction transaction = new editLecture_Transaction(lec,data,lec.getSection(),lec.getRoom(),lec.getDays(),t.getNewValue());
+                app.processTransaction(transaction);
+                t.getTableView().getItems().get(t.getTablePosition().getRow()).setTime(t.getNewValue());
+            }
+            
+        });
         TableColumn roomColumn = ohBuilder.buildTableColumn(OH_ROOM_LABEL2, tb, CLASS_OH_CENTERED_COLUMN);
+        roomColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        roomColumn.setOnEditCommit(new EventHandler<CellEditEvent<Lectures,String>>(){
+            @Override
+            public void handle(CellEditEvent<Lectures, String> t) {
+                OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
+                Lectures lec = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                editLecture_Transaction transaction = new editLecture_Transaction(lec,data,lec.getSection(),t.getNewValue(),lec.getDays(),lec.getTime());
+                app.processTransaction(transaction);
+                t.getTableView().getItems().get(t.getTablePosition().getRow()).setRoom(t.getNewValue());
+            }
+            
+            
+        });
+        
         sectionColumn.setCellValueFactory(new PropertyValueFactory<String, String>("section"));
         daysColumn.setCellValueFactory(new PropertyValueFactory<String, String>("days"));
         timeColumn.setCellValueFactory(new PropertyValueFactory<String, String>("time"));
@@ -339,14 +404,78 @@ public class OfficeHoursWorkspace extends AppWorkspaceComponent {
         timeColumn.prefWidthProperty().bind(tb.widthProperty().multiply(1.0 / 4.0));
         roomColumn.prefWidthProperty().bind(tb.widthProperty().multiply(1.0 / 4.0));
         TableView tb2 = ohBuilder.buildTableView(OH_RECITATIONTABLEVIEW, null, CLASS_OH_TABLE_VIEW, ENABLED);
+        tb2.setEditable(true);
         Button addRecitationBt = ohBuilder.buildTextButton(OH_ADDRECITATION_BUTTON, null, CLASS_OH_STYLEBUTTON, ENABLED);
         Button removeRecitationBt = ohBuilder.buildTextButton(OH_REMOVERECITATION_BUTTON, null, CLASS_OH_STYLEBUTTON, ENABLED);        
         TitledPane title2 = ohBuilder.buildButtonTitledPane(OH_RECITATION,addRecitationBt,removeRecitationBt ,tb2, meetingContainer, CLASS_OH_TITLEDPANE, ENABLED);
         TableColumn recSection = ohBuilder.buildTableColumn(OH_RECSECTION, tb2, CLASS_OH_CENTERED_COLUMN);
+        recSection.setCellFactory(TextFieldTableCell.forTableColumn());
+        recSection.setOnEditCommit(new EventHandler<CellEditEvent<Recitations,String>>(){
+            @Override
+            public void handle(CellEditEvent<Recitations, String> t) {
+                OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
+                Recitations lec = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                editRec_Transaction transaction = new editRec_Transaction(lec,data,t.getNewValue(),lec.getRoom(),lec.getDaysTime(),lec.getTa1(),lec.getTa2());
+                app.processTransaction(transaction);
+                t.getTableView().getItems().get(t.getTablePosition().getRow()).setSection(t.getNewValue());
+            }
+        
+    });
         TableColumn recDays = ohBuilder.buildTableColumn(OH_DAYSNTIME, tb2, CLASS_OH_CENTERED_COLUMN);
+        recDays.setCellFactory(TextFieldTableCell.forTableColumn());
+        recDays.setOnEditCommit(new EventHandler<CellEditEvent<Recitations,String>>(){
+            @Override
+            public void handle(CellEditEvent<Recitations, String> t) {
+                OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
+                Recitations lec = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                editRec_Transaction transaction = new editRec_Transaction(lec,data,lec.getSection(),lec.getRoom(),t.getNewValue(),lec.getTa1(),lec.getTa2());
+                app.processTransaction(transaction);
+                t.getTableView().getItems().get(t.getTablePosition().getRow()).setDaysTime(t.getNewValue());
+            }
+        
+    });
         TableColumn recRoom = ohBuilder.buildTableColumn(OH_RECROOM_LABEL, tb2, CLASS_OH_CENTERED_COLUMN);
+        recRoom.setCellFactory(TextFieldTableCell.forTableColumn());
+        recRoom.setOnEditCommit(new EventHandler<CellEditEvent<Recitations,String>>(){
+            @Override
+            public void handle(CellEditEvent<Recitations, String> t) {
+                OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
+                Recitations lec = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                editRec_Transaction transaction = new editRec_Transaction(lec,data,lec.getSection(),t.getNewValue(),lec.getDaysTime(),lec.getTa1(),lec.getTa2());
+                app.processTransaction(transaction);
+                t.getTableView().getItems().get(t.getTablePosition().getRow()).setRoom(t.getNewValue());
+            }
+        
+    });        
+        
+        
+        
         TableColumn recTA1 = ohBuilder.buildTableColumn(OH_TA1, tb2, CLASS_OH_CENTERED_COLUMN);
+        recTA1.setCellFactory(TextFieldTableCell.forTableColumn());
+        recTA1.setOnEditCommit(new EventHandler<CellEditEvent<Recitations,String>>(){
+            @Override
+            public void handle(CellEditEvent<Recitations, String> t) {
+                OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
+                Recitations lec = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                editRec_Transaction transaction = new editRec_Transaction(lec,data,lec.getSection(),lec.getRoom(),lec.getDaysTime(),t.getNewValue(),lec.getTa2());
+                app.processTransaction(transaction);
+                t.getTableView().getItems().get(t.getTablePosition().getRow()).setTa1(t.getNewValue());
+            }
+        
+    });
         TableColumn recTA2 = ohBuilder.buildTableColumn(OH_TA2, tb2, CLASS_OH_CENTERED_COLUMN);
+        recTA2.setCellFactory(TextFieldTableCell.forTableColumn());
+        recTA2.setOnEditCommit(new EventHandler<CellEditEvent<Recitations,String>>(){
+            @Override
+            public void handle(CellEditEvent<Recitations, String> t) {
+                OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
+                Recitations lec = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                editRec_Transaction transaction = new editRec_Transaction(lec,data,lec.getSection(),lec.getRoom(),lec.getDaysTime(),lec.getTa1(),t.getNewValue());
+                app.processTransaction(transaction);
+                t.getTableView().getItems().get(t.getTablePosition().getRow()).setTa2(t.getNewValue());
+            }
+        
+    });
         recSection.setCellValueFactory(new PropertyValueFactory<String, String>("section"));
         recDays.setCellValueFactory(new PropertyValueFactory<String, String>("daysTime"));
         recRoom.setCellValueFactory(new PropertyValueFactory<String, String>("room"));
@@ -359,14 +488,75 @@ public class OfficeHoursWorkspace extends AppWorkspaceComponent {
         recTA1.prefWidthProperty().bind(tb2.widthProperty().multiply(1.0 / 5.0));
         recTA2.prefWidthProperty().bind(tb2.widthProperty().multiply(1.0 / 5.0));
         TableView tb3 = ohBuilder.buildTableView(OH_LABSTABLEVIEW, meetingContainer, CLASS_OH_TABLE_VIEW, ENABLED);
+        tb3.setEditable(true);
         Button addLabBt = ohBuilder.buildTextButton(OH_ADDLAB_BUTTON, null, CLASS_OH_STYLEBUTTON, ENABLED);
         Button removeLabBt = ohBuilder.buildTextButton(OH_REMOVELAB_BUTTON, null, CLASS_OH_STYLEBUTTON, ENABLED);          
         TitledPane title3 = ohBuilder.buildButtonTitledPane(OH_LABS,addLabBt,removeLabBt, tb3, meetingContainer, CLASS_OH_TITLEDPANE, ENABLED);
         TableColumn labSection = ohBuilder.buildTableColumn(OH_LABSECTION, tb3, CLASS_OH_CENTERED_COLUMN);
+        labSection.setCellFactory(TextFieldTableCell.forTableColumn());
+        labSection.setOnEditCommit(new EventHandler<CellEditEvent<Labs,String>>(){
+            @Override
+            public void handle(CellEditEvent<Labs, String> t) {
+                OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
+                Labs lec = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                editLab_Transaction transaction = new editLab_Transaction(lec,data,t.getNewValue(),lec.getRoom(),lec.getDaysTime(),lec.getTa1(),lec.getTa2());
+                app.processTransaction(transaction);
+                t.getTableView().getItems().get(t.getTablePosition().getRow()).setSection(t.getNewValue());
+            }
+        
+    });
         TableColumn labDays = ohBuilder.buildTableColumn(OH_LABDAYSNTIME, tb3, CLASS_OH_CENTERED_COLUMN);
+        labDays.setCellFactory(TextFieldTableCell.forTableColumn());
+        labDays.setOnEditCommit(new EventHandler<CellEditEvent<Labs,String>>(){
+            @Override
+            public void handle(CellEditEvent<Labs, String> t) {
+                OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
+                Labs lec = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                editLab_Transaction transaction = new editLab_Transaction(lec,data,lec.getSection(),lec.getRoom(),t.getNewValue(),lec.getTa1(),lec.getTa2());
+                app.processTransaction(transaction);
+                t.getTableView().getItems().get(t.getTablePosition().getRow()).setDaysTime(t.getNewValue());
+            }
+        
+    });        
         TableColumn labRoom = ohBuilder.buildTableColumn(OH_LABROOM_LABEL, tb3, CLASS_OH_CENTERED_COLUMN);
+                labRoom.setCellFactory(TextFieldTableCell.forTableColumn());
+        labRoom.setOnEditCommit(new EventHandler<CellEditEvent<Labs,String>>(){
+            @Override
+            public void handle(CellEditEvent<Labs, String> t) {
+                OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
+                Labs lec = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                editLab_Transaction transaction = new editLab_Transaction(lec,data,lec.getSection(),t.getNewValue(),lec.getDaysTime(),lec.getTa1(),lec.getTa2());
+                app.processTransaction(transaction);
+                t.getTableView().getItems().get(t.getTablePosition().getRow()).setRoom(t.getNewValue());
+            }
+        
+    });
         TableColumn labTA1 = ohBuilder.buildTableColumn(OH_LABTA1, tb3, CLASS_OH_CENTERED_COLUMN);
+                labTA1.setCellFactory(TextFieldTableCell.forTableColumn());
+        labTA1.setOnEditCommit(new EventHandler<CellEditEvent<Labs,String>>(){
+            @Override
+            public void handle(CellEditEvent<Labs, String> t) {
+                OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
+                Labs lec = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                editLab_Transaction transaction = new editLab_Transaction(lec,data,lec.getSection(),lec.getRoom(),lec.getDaysTime(),t.getNewValue(),lec.getTa2());
+                app.processTransaction(transaction);
+                t.getTableView().getItems().get(t.getTablePosition().getRow()).setTa1(t.getNewValue());
+            }
+        
+    });
         TableColumn labTA2 = ohBuilder.buildTableColumn(OH_LABTA2, tb3, CLASS_OH_CENTERED_COLUMN);
+                labTA2.setCellFactory(TextFieldTableCell.forTableColumn());
+        labTA2.setOnEditCommit(new EventHandler<CellEditEvent<Labs,String>>(){
+            @Override
+            public void handle(CellEditEvent<Labs, String> t) {
+                OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
+                Labs lec = t.getTableView().getItems().get(t.getTablePosition().getRow());
+                editLab_Transaction transaction = new editLab_Transaction(lec,data,lec.getSection(),lec.getRoom(),lec.getDaysTime(),lec.getTa1(),t.getNewValue());
+                app.processTransaction(transaction);
+                t.getTableView().getItems().get(t.getTablePosition().getRow()).setTa2(t.getNewValue());
+            }
+        
+    });
         labSection.setCellValueFactory(new PropertyValueFactory<String, String>("section"));
         labDays.setCellValueFactory(new PropertyValueFactory<String, String>("daysTime"));
         labRoom.setCellValueFactory(new PropertyValueFactory<String, String>("room"));
@@ -389,11 +579,11 @@ public class OfficeHoursWorkspace extends AppWorkspaceComponent {
         ohBuilder.buildLabel(OH_CALENDAR_BOUNDARIES, scheduleContainer, CLASS_OH_BANNERHEADER_LABEL, ENABLED);
         HBox calendarContainer = ohBuilder.buildHBox(OH_CALENDAR_CONTAINER, scheduleContainer, CLASS_OH_SCHEDULE_CONTAINER, ENABLED);
         ohBuilder.buildLabel(OH_STARTINGMONDAY, calendarContainer, CLASS_OH_BANNER_LABEL, ENABLED);
-        DatePicker date1 = new DatePicker();
+        date1 = new DatePicker();
         date1.setValue(LocalDate.now());
         calendarContainer.getChildren().add(date1);
         ohBuilder.buildLabel(OH_ENDINGFRIDAY, calendarContainer, CLASS_OH_BANNER_LABEL, ENABLED);
-        DatePicker date2 = new DatePicker();
+        date2 = new DatePicker();
         date2.setValue(LocalDate.now());
         calendarContainer.getChildren().add(date2);
         TableView<ScheduleItem> scheduleItems = ohBuilder.buildTableView(OH_SCHEDULEITEMS, scheduleContainer, CLASS_OH_TABLE_VIEW, ENABLED);
@@ -561,6 +751,18 @@ public class OfficeHoursWorkspace extends AppWorkspaceComponent {
         lecTW.setOnMouseClicked(e->{
             controller.processSelectLecture();
         });
+    /*    lecTW.setOnKeyPressed(e->{
+            OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
+            Lectures lec = data.getSelectedLecture();
+            
+            if(e.getCode()== KeyCode.ENTER){
+                 
+
+                System.out.println(lec.getSection());
+                
+            }
+        });
+      */
         TableView recTW = (TableView) gui.getGUINode(OH_RECITATIONTABLEVIEW);
         recTW.setOnMouseClicked(e->{
             controller.processSelectRecitation();
@@ -572,6 +774,7 @@ public class OfficeHoursWorkspace extends AppWorkspaceComponent {
         TableView itemTW = (TableView) gui.getGUINode(OH_SCHEDULEITEMS);
         itemTW.setOnMouseClicked(e->{
             controller.processSelectItem();
+
         });
         RadioButton allRadio = (RadioButton) gui.getGUINode(OH_ALL_RADIO_BUTTON);
         allRadio.setOnAction(e -> {
@@ -615,7 +818,26 @@ public class OfficeHoursWorkspace extends AppWorkspaceComponent {
                 controller.processOfficeHoursTimeRange(indexOfStart, indexOfEnd);
             } 
         });
-        
+        date1.setOnAction(e->{
+           int value =  date1.getValue().compareTo(date2.getValue());
+           if(value > 0){
+                Alert alert = new Alert(AlertType.ERROR);
+                alert.setContentText("Invalid Time Error: End time cannot be same or earlier than Start time");
+                alert.showAndWait();               
+           }else{
+               controller.processDateRange(date1.getValue(), date2.getValue());
+           }
+        });
+        date2.setOnAction(e->{
+            int value =  date1.getValue().compareTo(date2.getValue());
+           if(value > 0){
+                Alert alert = new Alert(AlertType.ERROR);
+                alert.setContentText("Invalid Time Error: End time cannot be same or earlier than Start time");
+                alert.showAndWait();               
+           }else{
+               controller.processDateRange(date1.getValue(), date2.getValue());
+           }
+        });
         TextField tf1 = (TextField) gui.getGUINode(OH_INSTNAME_FIELD);
         TextField tf2 = (TextField) gui.getGUINode(OH_INSTEMAIL_FIELD);
         TextField tf3 = (TextField) gui.getGUINode(OH_INSTROOM_FIELD);
@@ -711,6 +933,7 @@ public class OfficeHoursWorkspace extends AppWorkspaceComponent {
         });
         b4.setOnAction(e->{
             controller.processAddScheduleItem(dp2);
+
         });
         b5.setOnAction(e->{
             controller.processCleanItem();

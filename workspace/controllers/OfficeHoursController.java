@@ -2,16 +2,18 @@ package oh.workspace.controllers;
 
 import djf.modules.AppGUIModule;
 import djf.ui.dialogs.AppDialogsFacade;
-import javafx.beans.property.StringProperty;
+import java.time.LocalDate;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import oh.OfficeHoursApp;
+import static oh.OfficeHoursPropertyType.OH_DAYS;
 import static oh.OfficeHoursPropertyType.OH_EMAIL_TEXT_FIELD;
 import static oh.OfficeHoursPropertyType.OH_FOOLPROOF_SETTINGS;
 import static oh.OfficeHoursPropertyType.OH_LECTURETABLEVIEW;
@@ -119,7 +121,7 @@ public class OfficeHoursController {
         app.getFoolproofModule().updateControls(OH_FOOLPROOF_SETTINGS);
     }
     public void processItem(){
-                app.getFoolproofModule().updateControls(OH_FOOLPROOF_SETTINGS);
+        app.getFoolproofModule().updateControls(OH_FOOLPROOF_SETTINGS);
 
     }
 
@@ -163,6 +165,7 @@ public class OfficeHoursController {
             Lectures lec = data.getSelectedLecture();
             Button b1 = (Button) gui.getGUINode(OH_REMOVELECTURE_BUTTON);
             b1.setDisable(false);
+            
             b1.setOnAction(e->{
               removeLecture_Transaction transaction = new removeLecture_Transaction(data,lec);
                 app.processTransaction(transaction);
@@ -222,6 +225,10 @@ public class OfficeHoursController {
         data.updateTimeSlot(start, end);
         
     }
+    public void processDateRange(LocalDate d1, LocalDate d2){
+        OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
+        data.updateScheduleItem(d1, d2);        
+    }
     public void processAddLecture(){
         AppGUIModule gui = app.getGUIModule();
         OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
@@ -271,11 +278,10 @@ public class OfficeHoursController {
            addScheduleItem_Transaction addItem = new addScheduleItem_Transaction(data,sched);
            app.processTransaction(addItem);
                    app.getFoolproofModule().updateControls(OH_FOOLPROOF_SETTINGS);
-           
                    
        }
        public void processCleanItem(){
-                      AppGUIModule gui = app.getGUIModule();
+           AppGUIModule gui = app.getGUIModule();
            OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
            TextField titleField = (TextField) gui.getGUINode(OH_TITLEFIELD);
            TextField topicField = (TextField) gui.getGUINode(OH_TOPICFIELD);
@@ -285,4 +291,5 @@ public class OfficeHoursController {
            topicField.clear();
            linkfield.clear();
        }
+     
 }
