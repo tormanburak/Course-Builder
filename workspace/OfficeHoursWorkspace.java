@@ -45,6 +45,7 @@ import oh.OfficeHoursPropertyType;
 import static oh.OfficeHoursPropertyType.*;
 import oh.data.Lectures;
 import oh.data.OfficeHoursData;
+import oh.data.ScheduleItem;
 import oh.data.TeachingAssistantPrototype;
 import oh.data.TimeSlot;
 import oh.transactions.Save_Transaction;
@@ -58,7 +59,7 @@ import static oh.workspace.style.OHStyle.*;
  * @author McKillaGorilla
  */
 public class OfficeHoursWorkspace extends AppWorkspaceComponent {
-
+    DatePicker dp2;
     public OfficeHoursWorkspace(OfficeHoursApp app) {
         super(app);
 
@@ -325,10 +326,10 @@ public class OfficeHoursWorkspace extends AppWorkspaceComponent {
         Button addLectureBt = ohBuilder.buildTextButton(OH_ADDLECTURE_BUTTON, null, CLASS_OH_STYLEBUTTON, ENABLED);
         Button removeLectureBt = ohBuilder.buildTextButton(OH_REMOVELECTURE_BUTTON, null, CLASS_OH_STYLEBUTTON, ENABLED);
         TitledPane title1 = ohBuilder.buildButtonTitledPane(OH_LECTURE,addLectureBt,removeLectureBt, tb, meetingContainer, CLASS_OH_TITLEDPANE, ENABLED);    
-        TableColumn sectionColumn = ohBuilder.buildTableColumn(OH_SECTION, tb, CLASS_OH_COLUMN);
-        TableColumn daysColumn = ohBuilder.buildTableColumn(OH_DAYS, tb, CLASS_OH_COLUMN);
-        TableColumn timeColumn = ohBuilder.buildTableColumn(OH_TIME, tb, CLASS_OH_COLUMN);
-        TableColumn roomColumn = ohBuilder.buildTableColumn(OH_ROOM_LABEL2, tb, CLASS_OH_COLUMN);
+        TableColumn sectionColumn = ohBuilder.buildTableColumn(OH_SECTION, tb, CLASS_OH_CENTERED_COLUMN);
+        TableColumn daysColumn = ohBuilder.buildTableColumn(OH_DAYS, tb, CLASS_OH_CENTERED_COLUMN);
+        TableColumn timeColumn = ohBuilder.buildTableColumn(OH_TIME, tb, CLASS_OH_CENTERED_COLUMN);
+        TableColumn roomColumn = ohBuilder.buildTableColumn(OH_ROOM_LABEL2, tb, CLASS_OH_CENTERED_COLUMN);
         sectionColumn.setCellValueFactory(new PropertyValueFactory<String, String>("section"));
         daysColumn.setCellValueFactory(new PropertyValueFactory<String, String>("days"));
         timeColumn.setCellValueFactory(new PropertyValueFactory<String, String>("time"));
@@ -341,11 +342,11 @@ public class OfficeHoursWorkspace extends AppWorkspaceComponent {
         Button addRecitationBt = ohBuilder.buildTextButton(OH_ADDRECITATION_BUTTON, null, CLASS_OH_STYLEBUTTON, ENABLED);
         Button removeRecitationBt = ohBuilder.buildTextButton(OH_REMOVERECITATION_BUTTON, null, CLASS_OH_STYLEBUTTON, ENABLED);        
         TitledPane title2 = ohBuilder.buildButtonTitledPane(OH_RECITATION,addRecitationBt,removeRecitationBt ,tb2, meetingContainer, CLASS_OH_TITLEDPANE, ENABLED);
-        TableColumn recSection = ohBuilder.buildTableColumn(OH_RECSECTION, tb2, CLASS_OH_COLUMN);
-        TableColumn recDays = ohBuilder.buildTableColumn(OH_DAYSNTIME, tb2, CLASS_OH_COLUMN);
-        TableColumn recRoom = ohBuilder.buildTableColumn(OH_RECROOM_LABEL, tb2, CLASS_OH_COLUMN);
-        TableColumn recTA1 = ohBuilder.buildTableColumn(OH_TA1, tb2, CLASS_OH_COLUMN);
-        TableColumn recTA2 = ohBuilder.buildTableColumn(OH_TA2, tb2, CLASS_OH_COLUMN);
+        TableColumn recSection = ohBuilder.buildTableColumn(OH_RECSECTION, tb2, CLASS_OH_CENTERED_COLUMN);
+        TableColumn recDays = ohBuilder.buildTableColumn(OH_DAYSNTIME, tb2, CLASS_OH_CENTERED_COLUMN);
+        TableColumn recRoom = ohBuilder.buildTableColumn(OH_RECROOM_LABEL, tb2, CLASS_OH_CENTERED_COLUMN);
+        TableColumn recTA1 = ohBuilder.buildTableColumn(OH_TA1, tb2, CLASS_OH_CENTERED_COLUMN);
+        TableColumn recTA2 = ohBuilder.buildTableColumn(OH_TA2, tb2, CLASS_OH_CENTERED_COLUMN);
         recSection.setCellValueFactory(new PropertyValueFactory<String, String>("section"));
         recDays.setCellValueFactory(new PropertyValueFactory<String, String>("daysTime"));
         recRoom.setCellValueFactory(new PropertyValueFactory<String, String>("room"));
@@ -361,11 +362,11 @@ public class OfficeHoursWorkspace extends AppWorkspaceComponent {
         Button addLabBt = ohBuilder.buildTextButton(OH_ADDLAB_BUTTON, null, CLASS_OH_STYLEBUTTON, ENABLED);
         Button removeLabBt = ohBuilder.buildTextButton(OH_REMOVELAB_BUTTON, null, CLASS_OH_STYLEBUTTON, ENABLED);          
         TitledPane title3 = ohBuilder.buildButtonTitledPane(OH_LABS,addLabBt,removeLabBt, tb3, meetingContainer, CLASS_OH_TITLEDPANE, ENABLED);
-        TableColumn labSection = ohBuilder.buildTableColumn(OH_LABSECTION, tb3, CLASS_OH_COLUMN);
-        TableColumn labDays = ohBuilder.buildTableColumn(OH_LABDAYSNTIME, tb3, CLASS_OH_COLUMN);
-        TableColumn labRoom = ohBuilder.buildTableColumn(OH_LABROOM_LABEL, tb3, CLASS_OH_COLUMN);
-        TableColumn labTA1 = ohBuilder.buildTableColumn(OH_LABTA1, tb3, CLASS_OH_COLUMN);
-        TableColumn labTA2 = ohBuilder.buildTableColumn(OH_LABTA2, tb3, CLASS_OH_COLUMN);
+        TableColumn labSection = ohBuilder.buildTableColumn(OH_LABSECTION, tb3, CLASS_OH_CENTERED_COLUMN);
+        TableColumn labDays = ohBuilder.buildTableColumn(OH_LABDAYSNTIME, tb3, CLASS_OH_CENTERED_COLUMN);
+        TableColumn labRoom = ohBuilder.buildTableColumn(OH_LABROOM_LABEL, tb3, CLASS_OH_CENTERED_COLUMN);
+        TableColumn labTA1 = ohBuilder.buildTableColumn(OH_LABTA1, tb3, CLASS_OH_CENTERED_COLUMN);
+        TableColumn labTA2 = ohBuilder.buildTableColumn(OH_LABTA2, tb3, CLASS_OH_CENTERED_COLUMN);
         labSection.setCellValueFactory(new PropertyValueFactory<String, String>("section"));
         labDays.setCellValueFactory(new PropertyValueFactory<String, String>("daysTime"));
         labRoom.setCellValueFactory(new PropertyValueFactory<String, String>("room"));
@@ -389,17 +390,24 @@ public class OfficeHoursWorkspace extends AppWorkspaceComponent {
         HBox calendarContainer = ohBuilder.buildHBox(OH_CALENDAR_CONTAINER, scheduleContainer, CLASS_OH_SCHEDULE_CONTAINER, ENABLED);
         ohBuilder.buildLabel(OH_STARTINGMONDAY, calendarContainer, CLASS_OH_BANNER_LABEL, ENABLED);
         DatePicker date1 = new DatePicker();
+        date1.setValue(LocalDate.now());
         calendarContainer.getChildren().add(date1);
         ohBuilder.buildLabel(OH_ENDINGFRIDAY, calendarContainer, CLASS_OH_BANNER_LABEL, ENABLED);
         DatePicker date2 = new DatePicker();
+        date2.setValue(LocalDate.now());
         calendarContainer.getChildren().add(date2);
-        TableView scheduleItems = ohBuilder.buildTableView(OH_SCHEDULEITEMS, scheduleContainer, CLASS_OH_TABLE_VIEW, ENABLED);
-        TitledPane scheduleTitle = ohBuilder.buildTitledPane(OH_SCHEDULETITLE, scheduleItems, scheduleContainer, CLASS_OH_TITLEDPANE, ENABLED);
-        TableColumn schedType = ohBuilder.buildTableColumn(OH_SCHEDTYPE, scheduleItems, CLASS_OH_COLUMN);
-        TableColumn schedDate = ohBuilder.buildTableColumn(OH_SCHEDDATE, scheduleItems, CLASS_OH_COLUMN);
-        TableColumn schedTitle = ohBuilder.buildTableColumn(OH_SCHEDTITLE, scheduleItems, CLASS_OH_COLUMN);
-        TableColumn schedTopic = ohBuilder.buildTableColumn(OH_SCHEDTOPIC, scheduleItems, CLASS_OH_COLUMN);
+        TableView<ScheduleItem> scheduleItems = ohBuilder.buildTableView(OH_SCHEDULEITEMS, scheduleContainer, CLASS_OH_TABLE_VIEW, ENABLED);
+        Button removeItemBt = ohBuilder.buildTextButton(OH_REMOVEITEM_BUTTON, null, CLASS_OH_STYLEBUTTON, ENABLED);                  
+        TitledPane scheduleTitle = ohBuilder.buildButtonTitledPane(OH_SCHEDULETITLE, removeItemBt,scheduleItems, scheduleContainer, CLASS_OH_TITLEDPANE, ENABLED);
+        TableColumn schedType = ohBuilder.buildTableColumn(OH_SCHEDTYPE, scheduleItems, CLASS_OH_CENTERED_COLUMN);
+        TableColumn schedDate = ohBuilder.buildTableColumn(OH_SCHEDDATE, scheduleItems, CLASS_OH_CENTERED_COLUMN);
+        TableColumn schedTitle = ohBuilder.buildTableColumn(OH_SCHEDTITLE, scheduleItems, CLASS_OH_CENTERED_COLUMN);
+        TableColumn schedTopic = ohBuilder.buildTableColumn(OH_SCHEDTOPIC, scheduleItems, CLASS_OH_CENTERED_COLUMN);
         scheduleTitle.setExpanded(ENABLED);
+        schedType.setCellValueFactory(new PropertyValueFactory<String, String>("type"));
+        schedDate.setCellValueFactory(new PropertyValueFactory<String, String>("date"));
+        schedTitle.setCellValueFactory(new PropertyValueFactory<String, String>("title"));
+        schedTopic.setCellValueFactory(new PropertyValueFactory<String, String>("topic"));
         schedType.prefWidthProperty().bind(scheduleTitle.widthProperty().multiply(1.0 / 4.0));
         schedDate.prefWidthProperty().bind(scheduleTitle.widthProperty().multiply(1.0 / 4.0));
         schedTitle.prefWidthProperty().bind(scheduleTitle.widthProperty().multiply(1.0 / 4.0));
@@ -407,10 +415,11 @@ public class OfficeHoursWorkspace extends AppWorkspaceComponent {
         ohBuilder.buildLabel(OH_ADDEDIT, scheduleContainer, CLASS_OH_BANNERHEADER_LABEL, ENABLED);
         HBox typeBox = ohBuilder.buildHBox(OH_TYPEBOX, scheduleContainer, CLASS_OH_SCHEDULE_CONTAINER, ENABLED);
         ohBuilder.buildLabel(OH_TYPE, typeBox, CLASS_OH_BANNER_LABEL, ENABLED);
-        ohBuilder.buildComboBox(OH_TYPECOMBO, OH_DISHONESTY, OH_OPTIONS, typeBox, CLASS_OH_BANNER_COMBOBOX, ENABLED);
+        ohBuilder.buildComboBox(OH_TYPECOMBO, "TYPE_OPTIONS", OH_OPTIONS, typeBox, CLASS_OH_BANNER_COMBOBOX, ENABLED);
         HBox dateBox = ohBuilder.buildHBox(OH_DATEBOX, scheduleContainer, CLASS_OH_SCHEDULE_CONTAINER, ENABLED);
         ohBuilder.buildLabel(OH_DATE, dateBox, CLASS_OH_BANNER_LABEL, ENABLED);
-        DatePicker dp2 = new DatePicker();
+        dp2 = new DatePicker();
+        dp2.setValue(LocalDate.now());
         dateBox.getChildren().add(dp2);
         HBox titleBox = ohBuilder.buildHBox(OH_TITLEBOX, scheduleContainer, CLASS_OH_SCHEDULE_CONTAINER, ENABLED);
         ohBuilder.buildLabel(OH_TITLE, titleBox, CLASS_OH_BANNER_LABEL, ENABLED);
@@ -493,13 +502,27 @@ public class OfficeHoursWorkspace extends AppWorkspaceComponent {
         // FOOLPROOF DESIGN STUFF
         TextField nameTextField = ((TextField) gui.getGUINode(OH_NAME_TEXT_FIELD));
         TextField emailTextField = ((TextField) gui.getGUINode(OH_EMAIL_TEXT_FIELD));
-
+        TextField titleField = (TextField) gui.getGUINode(OH_TITLEFIELD);
+        TextField topicField = (TextField) gui.getGUINode(OH_TOPICFIELD);
+        TextField linkField = (TextField) gui.getGUINode(OH_LINKFIELD);
+        
+        titleField.textProperty().addListener(e ->{
+            controller.processItem();
+        });
+        topicField.textProperty().addListener(e->{
+            controller.processItem();
+        });
+        linkField.textProperty().addListener(e->{
+            controller.processItem();
+        });
+        
         nameTextField.textProperty().addListener(e -> {
             controller.processTypeTA();
         });
         emailTextField.textProperty().addListener(e -> {
             controller.processTypeTA();
         });
+        
 
         // FIRE THE ADD EVENT ACTION
         nameTextField.setOnAction(e -> {
@@ -545,6 +568,10 @@ public class OfficeHoursWorkspace extends AppWorkspaceComponent {
         TableView labTW = (TableView) gui.getGUINode(OH_LABSTABLEVIEW);
         labTW.setOnMouseClicked(e->{
             controller.processSelectLab();
+        });
+        TableView itemTW = (TableView) gui.getGUINode(OH_SCHEDULEITEMS);
+        itemTW.setOnMouseClicked(e->{
+            controller.processSelectItem();
         });
         RadioButton allRadio = (RadioButton) gui.getGUINode(OH_ALL_RADIO_BUTTON);
         allRadio.setOnAction(e -> {
@@ -669,12 +696,11 @@ public class OfficeHoursWorkspace extends AppWorkspaceComponent {
         Button b1 = (Button) gui.getGUINode(OH_ADDLECTURE_BUTTON);
         Button b2 = (Button) gui.getGUINode(OH_ADDRECITATION_BUTTON);
         Button b3 = (Button) gui.getGUINode(OH_ADDLAB_BUTTON);
-        Button removeb1 = (Button) gui.getGUINode(OH_REMOVELECTURE_BUTTON);
-        Button removeb2 = (Button) gui.getGUINode(OH_REMOVERECITATION_BUTTON);
-        Button removeb3 = (Button) gui.getGUINode(OH_REMOVELAB_BUTTON);
+        Button b4 = (Button) gui.getGUINode(OH_ADDUPDATE);
+        Button b5 = (Button) gui.getGUINode(OH_CLEAR);
         
         
-        b1.setOnAction(e->{
+       b1.setOnAction(e->{
             controller.processAddLecture();
         });
         b2.setOnAction(e->{
@@ -683,10 +709,12 @@ public class OfficeHoursWorkspace extends AppWorkspaceComponent {
         b3.setOnAction(e->{
             controller.processAddLab();
         });
-        removeb1.setOnAction(e->{
-            
+        b4.setOnAction(e->{
+            controller.processAddScheduleItem(dp2);
         });
-
+        b5.setOnAction(e->{
+            controller.processCleanItem();
+        });
         
         
     }

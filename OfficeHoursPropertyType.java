@@ -186,6 +186,7 @@ public enum OfficeHoursPropertyType {
     OH_LECTURETABLEVIEW,
     OH_RECITATIONTABLEVIEW,
     OH_LABSTABLEVIEW,
+    OH_REMOVEITEM_BUTTON,
     
     
     

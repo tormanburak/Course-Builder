@@ -5,6 +5,8 @@ import djf.ui.dialogs.AppDialogsFacade;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -13,19 +15,25 @@ import oh.OfficeHoursApp;
 import static oh.OfficeHoursPropertyType.OH_EMAIL_TEXT_FIELD;
 import static oh.OfficeHoursPropertyType.OH_FOOLPROOF_SETTINGS;
 import static oh.OfficeHoursPropertyType.OH_LECTURETABLEVIEW;
+import static oh.OfficeHoursPropertyType.OH_LINKFIELD;
 import static oh.OfficeHoursPropertyType.OH_NAME_TEXT_FIELD;
 import static oh.OfficeHoursPropertyType.OH_NO_TA_SELECTED_CONTENT;
 import static oh.OfficeHoursPropertyType.OH_NO_TA_SELECTED_TITLE;
 import static oh.OfficeHoursPropertyType.OH_OFFICE_HOURS_TABLE_VIEW;
+import static oh.OfficeHoursPropertyType.OH_REMOVEITEM_BUTTON;
 import static oh.OfficeHoursPropertyType.OH_REMOVELAB_BUTTON;
 import static oh.OfficeHoursPropertyType.OH_REMOVELECTURE_BUTTON;
 import static oh.OfficeHoursPropertyType.OH_REMOVERECITATION_BUTTON;
 import static oh.OfficeHoursPropertyType.OH_TAS_TABLE_VIEW;
 import static oh.OfficeHoursPropertyType.OH_TA_EDIT_DIALOG;
+import static oh.OfficeHoursPropertyType.OH_TITLEFIELD;
+import static oh.OfficeHoursPropertyType.OH_TOPICFIELD;
+import static oh.OfficeHoursPropertyType.OH_TYPECOMBO;
 import oh.data.Labs;
 import oh.data.Lectures;
 import oh.data.OfficeHoursData;
 import oh.data.Recitations;
+import oh.data.ScheduleItem;
 import oh.data.TAType;
 import oh.data.TeachingAssistantPrototype;
 import oh.data.TimeSlot;
@@ -36,6 +44,8 @@ import oh.transactions.ToggleOfficeHours_Transaction;
 import oh.transactions.addLabs_Transaction;
 import oh.transactions.addLecture_Transaction;
 import oh.transactions.addRecitation_Transaction;
+import oh.transactions.addScheduleItem_Transaction;
+import oh.transactions.removeItem_Transaction;
 import oh.transactions.removeLabs_Transaction;
 import oh.transactions.removeLecture_Transaction;
 import oh.transactions.removeRecitation_Transaction;
@@ -107,6 +117,10 @@ public class OfficeHoursController {
 
     public void processTypeTA() {
         app.getFoolproofModule().updateControls(OH_FOOLPROOF_SETTINGS);
+    }
+    public void processItem(){
+                app.getFoolproofModule().updateControls(OH_FOOLPROOF_SETTINGS);
+
     }
 
     public void processEditTA() {
@@ -188,6 +202,21 @@ public class OfficeHoursController {
                
         
     }    
+    public void processSelectItem(){
+            AppGUIModule gui = app.getGUIModule();
+            OfficeHoursData data = (OfficeHoursData)app.getDataComponent();
+            ScheduleItem sched = data.getScheduleItem();
+            Button b1 = (Button) gui.getGUINode(OH_REMOVEITEM_BUTTON);
+            b1.setDisable(false);
+            b1.setOnAction(e->{
+              removeItem_Transaction transaction = new removeItem_Transaction(data,sched);
+                app.processTransaction(transaction);
+                           b1.setDisable(true);
+
+            });
+               
+        
+    }      
     public void processOfficeHoursTimeRange(int start, int end){
         OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
         data.updateTimeSlot(start, end);
@@ -226,4 +255,34 @@ public class OfficeHoursController {
         
         app.getFoolproofModule().updateControls(OH_FOOLPROOF_SETTINGS);
     }
+       public void processAddScheduleItem(DatePicker dp){
+           AppGUIModule gui = app.getGUIModule();
+           OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
+           ComboBox cb = (ComboBox) gui.getGUINode(OH_TYPECOMBO);
+           String type = cb.getValue().toString();
+           String date = dp.getValue().toString();
+           TextField titleField = (TextField) gui.getGUINode(OH_TITLEFIELD);
+           String title = titleField.getText();
+           TextField topicField = (TextField) gui.getGUINode(OH_TOPICFIELD);
+           String topic = topicField.getText();
+           
+           ScheduleItem sched = new ScheduleItem(type,date,title,topic);
+           
+           addScheduleItem_Transaction addItem = new addScheduleItem_Transaction(data,sched);
+           app.processTransaction(addItem);
+                   app.getFoolproofModule().updateControls(OH_FOOLPROOF_SETTINGS);
+           
+                   
+       }
+       public void processCleanItem(){
+                      AppGUIModule gui = app.getGUIModule();
+           OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
+           TextField titleField = (TextField) gui.getGUINode(OH_TITLEFIELD);
+           TextField topicField = (TextField) gui.getGUINode(OH_TOPICFIELD);
+           TextField linkfield = (TextField) gui.getGUINode(OH_LINKFIELD);
+           
+           titleField.clear();
+           topicField.clear();
+           linkfield.clear();
+       }
 }

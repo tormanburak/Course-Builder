@@ -3,11 +3,17 @@ package oh.workspace.foolproof;
 import djf.modules.AppGUIModule;
 import djf.ui.foolproof.FoolproofDesign;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import oh.OfficeHoursApp;
+import static oh.OfficeHoursPropertyType.OH_ADDUPDATE;
 import static oh.OfficeHoursPropertyType.OH_ADD_TA_BUTTON;
 import static oh.OfficeHoursPropertyType.OH_EMAIL_TEXT_FIELD;
+import static oh.OfficeHoursPropertyType.OH_LINKFIELD;
 import static oh.OfficeHoursPropertyType.OH_NAME_TEXT_FIELD;
+import static oh.OfficeHoursPropertyType.OH_TITLEFIELD;
+import static oh.OfficeHoursPropertyType.OH_TOPICFIELD;
+import static oh.OfficeHoursPropertyType.OH_TYPECOMBO;
 import oh.data.OfficeHoursData;
 import static oh.workspace.style.OHStyle.CLASS_OH_TEXT_FIELD;
 import static oh.workspace.style.OHStyle.CLASS_OH_TEXT_FIELD_ERROR;
@@ -24,7 +30,8 @@ public class OfficeHoursFoolproofDesign implements FoolproofDesign {
     public void updateControls() {
         updateAddTAFoolproofDesign();
         updateEditTAFoolproofDesign();
-    }
+        updateAddSchedItemFoolproof();
+        }
 
     private void updateAddTAFoolproofDesign() {
         AppGUIModule gui = app.getGUIModule();
@@ -74,6 +81,26 @@ public class OfficeHoursFoolproofDesign implements FoolproofDesign {
     
     private void updateEditTAFoolproofDesign() {
         
+    }
+    public void updateAddSchedItemFoolproof(){
+         AppGUIModule gui = app.getGUIModule();
+           OfficeHoursData data = (OfficeHoursData) app.getDataComponent();
+           
+           ComboBox cb = (ComboBox) gui.getGUINode(OH_TYPECOMBO);
+           String type = cb.getValue().toString();
+           TextField titleField = (TextField) gui.getGUINode(OH_TITLEFIELD);
+           String title = titleField.getText();
+           TextField topicField = (TextField) gui.getGUINode(OH_TOPICFIELD);
+           String topic = topicField.getText();
+           Button b4 = (Button) gui.getGUINode(OH_ADDUPDATE);
+           TextField linkfield = (TextField) gui.getGUINode(OH_LINKFIELD);
+           String link = linkfield.getText();
+           if(title.equals("") || topic.equals("") || link.equals("")){
+               b4.setDisable(true);
+           }else{
+               b4.setDisable(false);
+           }
+           
     }
     
     public void foolproofTextField(TextField textField, boolean hasLegalData) {

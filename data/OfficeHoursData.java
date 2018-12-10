@@ -20,6 +20,7 @@ import static oh.OfficeHoursPropertyType.OH_LECTURE;
 import static oh.OfficeHoursPropertyType.OH_LECTURETABLEVIEW;
 import static oh.OfficeHoursPropertyType.OH_OFFICE_HOURS_TABLE_VIEW;
 import static oh.OfficeHoursPropertyType.OH_RECITATIONTABLEVIEW;
+import static oh.OfficeHoursPropertyType.OH_SCHEDULEITEMS;
 import static oh.OfficeHoursPropertyType.OH_TAS_TABLE_VIEW;
 import oh.data.TimeSlot.DayOfWeek;
 
@@ -46,6 +47,7 @@ public class OfficeHoursData implements AppDataComponent {
     ObservableList<Lectures> lectures;
     ObservableList<Recitations> recitations;
     ObservableList<Labs> labs;
+    ObservableList<ScheduleItem> scheduleItem;
     // THESE ARE THE TIME BOUNDS FOR THE OFFICE HOURS GRID. NOTE
     // THAT THESE VALUES CAN BE DIFFERENT FOR DIFFERENT FILES, BUT
     // THAT OUR APPLICATION USES THE DEFAULT TIME VALUES AND PROVIDES
@@ -86,6 +88,9 @@ public class OfficeHoursData implements AppDataComponent {
         
         TableView<Labs> labsTableView = (TableView<Labs>) gui.getGUINode(OH_LABSTABLEVIEW);
         labs = labsTableView.getItems();
+        
+        TableView<ScheduleItem> itemTableView = (TableView<ScheduleItem>) gui.getGUINode(OH_SCHEDULEITEMS);
+        scheduleItem = itemTableView.getItems();
 
         // THESE ARE THE DEFAULT OFFICE HOURS
         startHour = MIN_START_HOUR;
@@ -287,6 +292,11 @@ public class OfficeHoursData implements AppDataComponent {
         TableView<Labs> tasTable = (TableView)gui.getGUINode(OH_LABSTABLEVIEW);
         return tasTable.getSelectionModel().getSelectedItem();
     }    
+    public ScheduleItem getScheduleItem(){
+        AppGUIModule gui = app.getGUIModule();
+        TableView<ScheduleItem> tasTable = (TableView)gui.getGUINode(OH_SCHEDULEITEMS);
+        return tasTable.getSelectionModel().getSelectedItem();        
+    }
     public HashMap<TimeSlot, ArrayList<DayOfWeek>> getTATimeSlots(TeachingAssistantPrototype ta) {
         HashMap<TimeSlot, ArrayList<DayOfWeek>> timeSlots = new HashMap();
         for (TimeSlot timeSlot : officeHours) {
@@ -487,5 +497,11 @@ public class OfficeHoursData implements AppDataComponent {
     }
     public void removeLab(Labs lab){
         labs.remove(lab);
+    }
+    public void addScheduleItem(ScheduleItem item){
+        scheduleItem.add(item);
+    }
+    public void removeScheduleItem(ScheduleItem item){
+        scheduleItem.remove(item);
     }
 }
