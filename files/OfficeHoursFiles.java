@@ -13,7 +13,6 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -31,6 +30,7 @@ import static oh.OfficeHoursPropertyType.OH_BANNERNUMBER_COMBOBOX;
 import static oh.OfficeHoursPropertyType.OH_BANNERSEMESTER_COMBOBOX;
 import static oh.OfficeHoursPropertyType.OH_BANNERSUBJECT_COMBOBOX;
 import static oh.OfficeHoursPropertyType.OH_BANNERYEAR_COMBOBOX;
+import static oh.OfficeHoursPropertyType.OH_BANNER_TITLEFIELD;
 import static oh.OfficeHoursPropertyType.OH_DESCRIPTIONTEXT_AREA;
 import static oh.OfficeHoursPropertyType.OH_DISHONESTYTEXT_AREA;
 import static oh.OfficeHoursPropertyType.OH_GRADEDCOMPONENTSTEXT_AREA;
@@ -97,6 +97,7 @@ public class OfficeHoursFiles implements AppFileComponent {
     static final String JSON_INSTROOM= "room";
     static final String JSON_INSTHOME= "home";    
     static final String JSON_INSTAREA = "hours";
+    static final String JSON_TITLEFIELD ="title";
     
     static final String JSON_DESCRIPTION= "description";
     static final String JSON_TOPICS= "topics";
@@ -174,6 +175,10 @@ public class OfficeHoursFiles implements AppFileComponent {
         
         ComboBox cb3 = (ComboBox) gui.getGUINode(OH_BANNERNUMBER_COMBOBOX);
         cb3.setValue(s4);
+        
+        String title = json.getString(JSON_TITLEFIELD);
+        TextField fieldTitle = (TextField) gui.getGUINode(OH_BANNER_TITLEFIELD);
+        fieldTitle.setText(title);
         
         String str1 = json.getString(JSON_INSTNAME);
         TextField tf = (TextField) gui.getGUINode(OH_INSTNAME_FIELD);
@@ -430,6 +435,9 @@ public class OfficeHoursFiles implements AppFileComponent {
         ComboBox cb3 = (ComboBox) gui.getGUINode(OH_BANNERSEMESTER_COMBOBOX);
         String str3 = cb3.getValue().toString();
         
+        TextField titlefield = (TextField) gui.getGUINode(OH_BANNER_TITLEFIELD);
+        String title = titlefield.getText();
+        
         TextField tf = (TextField) gui.getGUINode(OH_INSTNAME_FIELD);
         String strtf = tf.getText();
         
@@ -479,6 +487,7 @@ public class OfficeHoursFiles implements AppFileComponent {
                 .add(JSON_GRAD_TAS, gradTAsArray)
                 .add(JSON_UNDERGRAD_TAS, undergradTAsArray)
                 .add(JSON_OFFICE_HOURS, officeHoursArray)
+                .add(JSON_TITLEFIELD, title)
                 .add(JSON_SUBJECT, str)
                 .add(JSON_YEAR, str1)
                 .add(JSON_SEMESTER, str3)
@@ -532,6 +541,7 @@ public class OfficeHoursFiles implements AppFileComponent {
 
     @Override
     public void exportData(AppDataComponent data, String filePath) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        System.out.println("xeport");
     }
 }
