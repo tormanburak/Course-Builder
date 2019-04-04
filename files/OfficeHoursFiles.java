@@ -1,5 +1,9 @@
 package oh.files;
 
+import static djf.AppPropertyType.ABOUT_DIALOG_ERROR_CONTENT;
+import static djf.AppPropertyType.ABOUT_DIALOG_ERROR_TITLE;
+import static djf.AppPropertyType.APP_EXPORT_PAGE;
+import static djf.AppPropertyType.APP_PATH_WEB;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,11 +13,14 @@ import javax.json.JsonReader;
 import djf.components.AppDataComponent;
 import djf.components.AppFileComponent;
 import djf.modules.AppGUIModule;
+import djf.ui.dialogs.AppDialogsFacade;
+import djf.ui.dialogs.AppWebDialog;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.math.BigInteger;
+import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -54,6 +61,7 @@ import oh.data.TAType;
 import oh.data.TeachingAssistantPrototype;
 import oh.data.TimeSlot;
 import oh.data.TimeSlot.DayOfWeek;
+import properties_manager.PropertiesManager;
 
 /**
  * This class serves as the file component for the TA
@@ -541,7 +549,15 @@ public class OfficeHoursFiles implements AppFileComponent {
 
     @Override
     public void exportData(AppDataComponent data, String filePath) throws IOException {
-        
-        System.out.println("xeport");
+        AppWebDialog dialog = new AppWebDialog(app);
+        try{
+        PropertiesManager props = PropertiesManager.getPropertiesManager();
+        String webPath = props.getProperty(APP_PATH_WEB);
+         filePath = webPath + props.getProperty(APP_EXPORT_PAGE);
+        dialog.showWebDialog(filePath);
+        }catch(MalformedURLException murle){
+             AppDialogsFacade.showMessageDialog(app.getGUIModule().getWindow(), ABOUT_DIALOG_ERROR_TITLE, ABOUT_DIALOG_ERROR_CONTENT);
+
+        }
     }
 }
